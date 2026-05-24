@@ -1,7 +1,7 @@
 <template>
   <section
     id="certifications-section"
-    class="common-padding relative mx-auto min-h-[60vh] overflow-y-clip py-0 will-change-transform"
+    class="common-padding relative mx-auto min-h-[60vh] overflow-y-clip pt-20 sm:pt-32 pb-20 sm:pb-32 will-change-transform"
   >
     <!-- Header -->
     <div
