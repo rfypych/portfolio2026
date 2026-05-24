@@ -909,11 +909,11 @@ const fetchPdfFromUrl = async () => {
       url = `https://drive.google.com/uc?export=download&id=${match[1]}`;
     }
     
-    // Use corsproxy.io to bypass CORS
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    // Use allorigins.win to bypass CORS
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
     
     const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error('Network response was not ok');
+    if (!response.ok) throw new Error(`Failed to fetch PDF (status: ${response.status})`);
     
     const arrayBuffer = await response.arrayBuffer();
     
