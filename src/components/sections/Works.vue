@@ -71,7 +71,7 @@
               ></video>
               <img
                 v-else
-                alt="work-background"
+                :alt="`${work.name} project background by Rofikul Huda`"
                 loading="lazy"
                 class="absolute size-full object-cover select-none"
                 :src="work.imageBg"

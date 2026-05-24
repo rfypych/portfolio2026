@@ -19,7 +19,7 @@ export default defineConfig({
     sitemap({
       hostname: 'https://rfypych.github.io/',
       basePath: 'portfolio2026',
-      changefreq: 'hourly', // default: 'daily'
+      changefreq: 'weekly',
       priority: 1,
     }),
   ],

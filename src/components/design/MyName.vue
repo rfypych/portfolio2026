@@ -1,5 +1,5 @@
 <template>
-  <h1 class="sr-only">Rofikul Huda - Developer & Security Researcher</h1>
+  <h1 class="sr-only">Rofikul - Full Stack Developer</h1>
   <h2 class="sr-only">Web Developer</h2>
 
   <MyEnName id="svg-my-en-name" :class="$attrs.class" />

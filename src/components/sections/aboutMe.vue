@@ -47,7 +47,7 @@
           v-else
           :src="settings.aboutPhoto || profile2Fallback"
           class="aspect-[1/1.5] rounded-lg object-cover object-top mix-blend-screen brightness-90 grayscale"
-          alt="Headshot"
+          alt="Rofikul Huda - Developer and Security Researcher portrait"
         />
       </div>
       <div class="col-span-11 mt-10 md:col-span-8 md:col-start-6">

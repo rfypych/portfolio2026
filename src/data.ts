@@ -96,8 +96,8 @@ const resourceLinks = [
 const heroText =
   'A freelance full-stack developer, making good shit since 2023, hiding bad shit since 2023.';
 
-const locationPlace = `15°22'22.0"N 44°10'39.5"E`;
-const locationCountry = 'Yemen, Sanaa';
+const locationPlace = `-6°12'8.0"S 106°48'58.0"E`;
+const locationCountry = 'Indonesia';
 
 // cal.com
 const dataCalNamespace = '30min';

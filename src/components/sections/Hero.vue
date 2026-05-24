@@ -80,7 +80,7 @@
               v-else
               id="profile-img"
               :src="settings.heroPhoto || profileFallback"
-              alt="Profile photo"
+              alt="Rofikul Huda - Full-Stack Developer and Security Researcher"
               class="size-full scale-90 rounded-lg object-cover object-top brightness-110 grayscale"
             />
           </div>

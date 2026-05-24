@@ -1,0 +1,11 @@
+# robots.txt for Rofikul Huda Portfolio
+# https://rfypych.github.io/portfolio2026/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://rfypych.github.io/portfolio2026/sitemap.xml
+
+# Crawl-delay (optional, be polite to crawlers)
+Crawl-delay: 1
