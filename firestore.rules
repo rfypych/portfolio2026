@@ -5,22 +5,22 @@ service cloud.firestore {
     // Projects, Services & Testimonials: anyone can read, only authenticated users can write
     match /projects/{docId} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == '5lyBCtJxxEPP1azDPFehD0IgAZV2';
     }
 
     match /services/{docId} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == '5lyBCtJxxEPP1azDPFehD0IgAZV2';
     }
 
     match /testimonials/{docId} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == '5lyBCtJxxEPP1azDPFehD0IgAZV2';
     }
 
     match /certifications/{docId} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == '5lyBCtJxxEPP1azDPFehD0IgAZV2';
     }
   }
 }
