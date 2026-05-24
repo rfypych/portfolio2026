@@ -909,11 +909,14 @@ const fetchPdfFromUrl = async () => {
       url = `https://drive.google.com/uc?export=download&id=${match[1]}`;
     }
     
-    // Use allorigins.win to bypass CORS
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    // Use local serverless API to bypass CORS
+    const proxyUrl = `/api/fetch-pdf?url=${encodeURIComponent(url)}`;
     
     const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error(`Failed to fetch PDF (status: ${response.status})`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch PDF (status: ${response.status}) - ${errorText}`);
+    }
     
     const arrayBuffer = await response.arrayBuffer();
     
