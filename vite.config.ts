@@ -17,7 +17,7 @@ export default defineConfig({
     vue(),
     robots(),
     sitemap({
-      hostname: 'https://rfiklz.vercel.app',
+      hostname: 'https://rofikul.vercel.app',
       changefreq: 'weekly',
       priority: 1,
     }),

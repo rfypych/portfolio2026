@@ -1,11 +1,11 @@
 # robots.txt for Rofikul Huda Portfolio
-# https://rfiklz.vercel.app/
+# https://rofikul.vercel.app/
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://rfiklz.vercel.app/sitemap.xml
+Sitemap: https://rofikul.vercel.app/sitemap.xml
 
 # Crawl-delay (optional, be polite to crawlers)
 Crawl-delay: 1

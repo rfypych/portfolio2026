@@ -8,8 +8,9 @@ const __dirname = path.dirname(__filename);
 const args = process.argv.slice(2);
 if (args.length !== 2) {
   console.error('\n❌ Error: Invalid arguments');
-  console.error('Usage: npm run set-domain <old-domain> <new-domain>');
-  console.error('Example: npm run set-domain rfiklz.vercel.app rofikul.my.id\n');
+  console.error('Usage: npm run change-domain <old-domain> <new-domain>');
+  console.error('   or: npm run set-domain <old-domain> <new-domain>');
+  console.error('Example: npm run change-domain rfiklz.vercel.app rofikul.my.id\n');
   process.exit(1);
 }
 
