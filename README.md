@@ -54,5 +54,5 @@ Special thanks to the original UI designer, **Huy Nguyen**, whose creative visio
 
 ---
 <div align="center">
-  <sub>Built with ❤️ by Rofikul Huda</sub>
+  <sub>Built with 🧠 by Rofikul Huda</sub>
 </div>
