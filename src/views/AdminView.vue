@@ -289,10 +289,19 @@
 
               <!-- Profile Photo Upload -->
               <div class="p-4 border border-white/10 rounded-xl bg-white/3">
-                <p class="text-sm font-medium text-white/60 mb-3">Profile Photo/Media (via Cloudinary)</p>
-                <input type="file" @change="handleTestimonialPhotoUpload" accept="image/*,video/*,.gif" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-sm font-medium text-white/60">Profile Photo/Media</p>
+                  <button type="button" @click="openMediaSelector((url) => testimonialForm.profile = url)" class="px-3 py-1 bg-flax-smoke-300 text-black text-xs font-bold rounded hover:bg-flax-smoke-400 transition-colors">
+                    📂 Select Existing
+                  </button>
+                </div>
+                <input type="file" @change="handleTestimonialPhotoUpload" accept="image/*,video/*,.gif" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer w-full">
                 <span v-if="uploadingTestimonialPhoto" class="text-xs text-flax-smoke-300 animate-pulse block mt-2">⬆ Uploading...</span>
-                <span v-else-if="testimonialForm.profile" class="text-xs text-green-400 block mt-2 truncate">✓ {{ testimonialForm.profile.split('/').pop() }}</span>
+                <div v-else-if="testimonialForm.profile" class="mt-3 flex items-center gap-3 bg-black/20 p-2 rounded border border-white/5">
+                  <video v-if="isVideo(testimonialForm.profile)" :src="testimonialForm.profile" autoplay muted loop class="size-10 object-cover rounded"></video>
+                  <img v-else :src="testimonialForm.profile" class="size-10 object-cover rounded" />
+                  <span class="text-xs text-green-400 truncate flex-1">✓ Media attached</span>
+                </div>
               </div>
 
               <div class="flex gap-3">
@@ -461,17 +470,24 @@
                   <input v-model="certForm.credentialUrl" placeholder="https://..." class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
                 </div>
               </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs text-white/40 uppercase tracking-wider">Badge Media</label>
-                <div class="flex items-center gap-4">
-                  <input type="file" @change="handleCertBadgeUpload" accept="image/*,video/*,.gif,.pdf"
-                    class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer" :disabled="uploadingCertBadge || !!pdfFilePending" />
-                  <span v-if="uploadingCertBadge" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Processing...</span>
-                  <video v-else-if="isVideo(certForm.badgeUrl)" :src="certForm.badgeUrl" autoplay muted loop class="size-10 rounded-lg object-contain border border-white/10"></video>
-                  <img v-else-if="certForm.badgeUrl" :src="certForm.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" />
-                </div>
-                
-                <div v-if="pdfFilePending" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 mt-1 bg-white/5 border border-white/10 rounded-lg gap-3">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs text-white/40 uppercase tracking-wider">Badge Media</label>
+                  <div class="flex items-center gap-4">
+                    <input type="file" @change="handleCertBadgeUpload" accept="image/*,video/*,.gif,.pdf"
+                      class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer" :disabled="uploadingCertBadge || !!pdfFilePending" />
+                    <span v-if="uploadingCertBadge" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Processing...</span>
+                    <video v-else-if="isVideo(certForm.badgeUrl)" :src="certForm.badgeUrl" autoplay muted loop class="size-10 rounded-lg object-contain border border-white/10"></video>
+                    <img v-else-if="certForm.badgeUrl" :src="certForm.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" />
+                  </div>
+                  
+                  <div class="flex gap-2 mt-2 max-w-md">
+                    <input type="text" v-model="pdfUrlInput" placeholder="Or paste PDF URL (e.g. Google Drive)" class="p-2 rounded bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 text-xs flex-1 transition-colors" :disabled="uploadingCertBadge || !!pdfFilePending" />
+                    <button type="button" @click="fetchPdfFromUrl" class="px-3 py-1.5 bg-flax-smoke-300 text-black font-bold rounded hover:bg-flax-smoke-400 text-xs transition-colors shrink-0" :disabled="uploadingCertBadge || !!pdfFilePending || !pdfUrlInput">
+                      {{ isFetchingPdf ? 'Fetching...' : 'Fetch URL' }}
+                    </button>
+                  </div>
+                  
+                  <div v-if="pdfFilePending" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 mt-1 bg-white/5 border border-white/10 rounded-lg gap-3">
                   <div class="flex flex-col">
                     <p class="text-sm font-semibold text-flax-smoke-300">PDF Detected ({{ pdfNumPages }} pages)</p>
                     <p class="text-xs text-white/50">Select page to extract:</p>
@@ -524,6 +540,35 @@
 
       </div>
     </main>
+
+    <!-- Media Selector Modal -->
+    <div v-if="showMediaSelector" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div class="bg-[#1C1C1C] border border-white/10 rounded-2xl p-6 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl">
+        <div class="flex items-center justify-between mb-6 shrink-0">
+          <div>
+            <h2 class="text-xl font-bold text-flax-smoke-300">Media Manager</h2>
+            <p class="text-sm text-white/40 mt-1">Select an existing image/video to reuse</p>
+          </div>
+          <button type="button" @click="closeMediaSelector" class="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
+            ✕
+          </button>
+        </div>
+        
+        <div v-if="mediaItems.length === 0" class="flex-1 flex items-center justify-center text-white/40 py-12">
+          No media found.
+        </div>
+        <div v-else class="flex-1 overflow-y-auto pr-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 pb-4 custom-scrollbar">
+          <div v-for="(url, index) in mediaItems" :key="index" @click="selectMediaItem(url)" 
+               class="group relative aspect-square bg-black border border-white/10 rounded-xl overflow-hidden cursor-pointer hover:border-flax-smoke-400 transition-all">
+            <video v-if="isVideo(url)" :src="url" muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"></video>
+            <img v-else :src="url" loading="lazy" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div class="absolute inset-0 bg-flax-smoke-400/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+              <span class="bg-black text-white text-xs px-3 py-1.5 rounded-lg font-medium border border-white/10 shadow-lg">Select</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -552,6 +597,42 @@ const { testimonials, loading: loadingTestimonials, fetchTestimonials, addTestim
 const { settings, fetchSettings, updateSettings } = useSettings();
 const { certifications, loading: loadingCerts, fetchCertifications, addCertification, updateCertification, deleteCertification, reorderCertifications } = useCertifications();
 const { uploadFile, uploading } = useCloudinary();
+
+// --- Media Manager Logic ---
+const showMediaSelector = ref(false);
+const mediaItems = ref<string[]>([]);
+const mediaSelectCallback = ref<((url: string) => void) | null>(null);
+
+const openMediaSelector = (callback: (url: string) => void) => {
+  const items = new Set<string>();
+  
+  if (settings.value?.heroPhoto) items.add(settings.value.heroPhoto);
+  if (settings.value?.aboutPhoto) items.add(settings.value.aboutPhoto);
+  if (settings.value?.contactVideo) items.add(settings.value.contactVideo);
+  
+  projects.value.forEach((p: Project) => {
+    if (p.imageBg) items.add(p.imageBg);
+    if (p.videoSrc) items.add(p.videoSrc);
+  });
+  testimonials.value.forEach((t: Testimonial) => t.profile && items.add(t.profile));
+  certifications.value.forEach((c: Certification) => c.badgeUrl && items.add(c.badgeUrl));
+  
+  mediaItems.value = Array.from(items).filter(url => url && typeof url === 'string');
+  mediaSelectCallback.value = callback;
+  showMediaSelector.value = true;
+};
+
+const selectMediaItem = (url: string) => {
+  if (mediaSelectCallback.value) {
+    mediaSelectCallback.value(url);
+  }
+  closeMediaSelector();
+};
+
+const closeMediaSelector = () => {
+  showMediaSelector.value = false;
+  mediaSelectCallback.value = null;
+};
 
 // Generic move item up/down and persist order
 const moveItem = async <T>(list: T[], index: number, direction: -1 | 1, reorderFn: (items: T[]) => Promise<void>) => {
@@ -808,6 +889,46 @@ const convertPdfPageAndUpload = async (pdfDoc: any, pageNumber: number, original
   } catch (err) {
     alert('PDF Conversion failed: ' + (err as Error).message);
     uploadingCertBadge.value = false;
+  }
+};
+
+const pdfUrlInput = ref('');
+const isFetchingPdf = ref(false);
+
+const fetchPdfFromUrl = async () => {
+  if (!pdfUrlInput.value) return;
+  isFetchingPdf.value = true;
+  uploadingCertBadge.value = true;
+  try {
+    let url = pdfUrlInput.value;
+    
+    // Convert Google Drive link to direct download
+    const driveRegex = /\/file\/d\/([a-zA-Z0-9_-]+)/;
+    const match = url.match(driveRegex);
+    if (match && match[1]) {
+      url = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    }
+    
+    // Use corsproxy.io to bypass CORS
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    const arrayBuffer = await response.arrayBuffer();
+    
+    // Create a File object
+    const file = new File([arrayBuffer], "fetched-document.pdf", { type: "application/pdf" });
+    
+    // Call existing processPdf function
+    await processPdf(file);
+    
+    pdfUrlInput.value = '';
+  } catch (error) {
+    alert('Failed to fetch PDF from URL: ' + (error as Error).message);
+    uploadingCertBadge.value = false;
+  } finally {
+    isFetchingPdf.value = false;
   }
 };
 
