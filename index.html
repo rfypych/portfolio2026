@@ -144,7 +144,37 @@
   </head>
 
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- Pre-Hydration SEO Skeleton: This content is instantly read by search engines and wiped out by Vue once the app loads -->
+      <div style="display: none; visibility: hidden; opacity: 0;" aria-hidden="true">
+        <header>
+          <h1>Rofikul Huda - Developer &amp; Security Researcher</h1>
+          <p>Full-Stack Developer, Security Researcher &amp; AI Enthusiast. Building secure digital experiences, clean code, and logical solutions.</p>
+        </header>
+        <main>
+          <section>
+            <h2>About Me</h2>
+            <p>I am Rofikul Huda (also known as 0XRPHY, rfypych). I specialize in front-end development, back-end engineering, and security research.</p>
+          </section>
+          <section>
+            <h2>Services</h2>
+            <ul>
+              <li>Web Development</li>
+              <li>Security Auditing &amp; Research</li>
+              <li>Performance Optimization</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Portfolio &amp; Works</h2>
+            <p>Explore my recent projects, creative development experiments, and technical articles.</p>
+          </section>
+          <section>
+            <h2>Contact</h2>
+            <p>Email: rfikl.huda@gmail.com | Connect with me on LinkedIn and GitHub.</p>
+          </section>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
 
     <script type="text/javascript">
@@ -201,33 +231,56 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Rofikul Huda",
-        "givenName": "Rofikul",
-        "familyName": "Huda",
-        "alternateName": [
-          "0xrphy",
-          "rfypych",
-          "rfyycrnge",
-          "rofikul huda"
-        ],
-        "jobTitle": "Developer &amp; Security Researcher",
-        "description": "Developer, Security Researcher &amp; AI Enthusiast. Building secure digital experiences, clean code, and logical solutions.",
-        "image": "./profile.webp",
-        "url": "https://rfypych.github.io/portfolio2026/",
-        "sameAs": [
-          "https://github.com/rfypych",
-          "https://linkedin.com/in/rofikulhuda/",
-          "https://t.me/rfyycrnge",
-          "https://instagram.com/rfikl_",
-          "https://discord.com/users/0xrphy"
-        ],
-        "knowsLanguage": ["en", "ar"],
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Freelance"
-        },
-        "skills": "Security Research, Full-Stack Development, Frontend Development, Backend Development, Web Development, Artificial Intelligence"
+        "@graph": [
+          {
+            "@type": "ProfilePage",
+            "@id": "https://rfypych.github.io/portfolio2026/#webpage",
+            "url": "https://rfypych.github.io/portfolio2026/",
+            "name": "Rofikul Huda - Developer & Security Researcher",
+            "isPartOf": {
+              "@type": "WebSite",
+              "@id": "https://rfypych.github.io/portfolio2026/#website",
+              "url": "https://rfypych.github.io/portfolio2026/",
+              "name": "Rofikul Huda"
+            },
+            "about": {
+              "@id": "https://rfypych.github.io/portfolio2026/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://rfypych.github.io/portfolio2026/#person",
+            "name": "Rofikul Huda",
+            "givenName": "Rofikul",
+            "familyName": "Huda",
+            "alternateName": [
+              "0xrphy",
+              "rfypych",
+              "rfyycrnge",
+              "rofikul huda"
+            ],
+            "jobTitle": "Developer & Security Researcher",
+            "description": "Developer, Security Researcher & AI Enthusiast. Building secure digital experiences, clean code, and logical solutions.",
+            "image": "./profile.webp",
+            "url": "https://rfypych.github.io/portfolio2026/",
+            "sameAs": [
+              "https://github.com/rfypych",
+              "https://linkedin.com/in/rofikulhuda/",
+              "https://t.me/rfyycrnge",
+              "https://instagram.com/rfikl_",
+              "https://discord.com/users/0xrphy"
+            ],
+            "knowsLanguage": ["en", "ar"],
+            "worksFor": {
+              "@type": "Organization",
+              "name": "Freelance"
+            },
+            "skills": "Security Research, Full-Stack Development, Frontend Development, Backend Development, Web Development, Artificial Intelligence",
+            "mainEntityOfPage": {
+              "@id": "https://rfypych.github.io/portfolio2026/#webpage"
+            }
+          }
+        ]
       }
     </script>
 
