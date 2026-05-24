@@ -90,6 +90,7 @@
                 ></video>
                 <img
                   v-else-if="work.videoSrc"
+                  ref="videoRefs"
                   class="size-[80%] rounded-md object-contain blur transition-all duration-500 ease-in-out"
                   :src="work.videoSrc"
                 />
@@ -205,19 +206,21 @@
 
   const handleIntersection = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
-      const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting && typeof video.play === 'function') {
-        video.play().catch(() => {});
-        video.classList.remove('blur');
+      const media = entry.target as HTMLElement;
+      if (entry.isIntersecting) {
+        if ('play' in media && typeof (media as any).play === 'function') {
+          (media as HTMLVideoElement).play().catch(() => {});
+        }
+        media.classList.remove('blur');
       }
     });
   };
 
   const stopAllVideos = () => {
-    videoRefs.value?.map((video: HTMLVideoElement) => {
-      if (video && typeof video.pause === 'function' && !video.paused) {
-        video.pause();
-        video.currentTime = 0; // Reset video to the start
+    videoRefs.value?.map((video: HTMLElement) => {
+      if (video && 'pause' in video && typeof (video as any).pause === 'function' && !(video as any).paused) {
+        (video as HTMLVideoElement).pause();
+        (video as HTMLVideoElement).currentTime = 0; // Reset video to the start
       }
     });
   };
@@ -236,10 +239,10 @@
       threshold: 0.75, // Trigger when 75% of the video is visible
     });
 
-    // Observe each video element
-    videoRefs.value?.forEach((video) => {
-      if (video && typeof video.play === 'function') {
-        observer.observe(video);
+    // Observe each media element
+    videoRefs.value?.forEach((media) => {
+      if (media) {
+        observer.observe(media);
       }
     });
 
