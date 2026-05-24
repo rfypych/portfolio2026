@@ -35,7 +35,7 @@
             :data-cal-config="dataCalConfig"
             label="Get in touch"
           /> -->
-          <Button label="Get in touch" url="https://discord.com/users/0xrphy" />
+          <Button label="Get in touch" url="https://discord.com/users/893994323589353504" />
         </div>
       </div>
       <div
