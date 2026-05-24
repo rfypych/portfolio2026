@@ -64,12 +64,32 @@ const socialLinks = [
 
 const resourceLinks = [
   {
-    label: 'Pillarstack',
-    url: 'https://www.pillarstack.com',
+    label: 'Vue.js',
+    url: 'https://vuejs.org/',
   },
   {
-    label: 'Figma Template',
-    url: 'https://www.figma.com/community/file/1328038510191576951/project-starter-template',
+    label: 'TypeScript',
+    url: 'https://www.typescriptlang.org/',
+  },
+  {
+    label: 'Tailwind CSS',
+    url: 'https://tailwindcss.com/',
+  },
+  {
+    label: 'GSAP Animation',
+    url: 'https://gsap.com/',
+  },
+  {
+    label: 'Lenis Scroll',
+    url: 'https://lenis.darkroom.engineering/',
+  },
+  {
+    label: 'Firebase',
+    url: 'https://firebase.google.com/',
+  },
+  {
+    label: 'Vite',
+    url: 'https://vitejs.dev/',
   },
 ];
 

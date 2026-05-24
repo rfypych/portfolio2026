@@ -38,8 +38,8 @@
             </div>
 
             <p class="sr-only">
-              A freelance full-stack developer, cutting-edge technologies to
-              deliver comprehensive solutions for your business.
+              A freelance developer and security researcher focused on building
+              secure web applications and reliable system architectures.
             </p>
             <p
               v-html="whoAmI"
@@ -66,7 +66,18 @@
             class="relative col-span-4 mt-10 h-[20vh] max-w-lg flex-col rounded-lg select-none sm:mt-0 sm:h-full md:flex md:h-[50vh]"
           >
             <div class="overlay bg-flax-smoke-50 absolute inset-0 z-2"></div>
+            <video
+              v-if="settings.heroPhoto && isVideo(settings.heroPhoto)"
+              id="profile-img"
+              :src="settings.heroPhoto"
+              autoplay
+              muted
+              loop
+              playsinline
+              class="size-full scale-90 rounded-lg object-cover object-top brightness-110 grayscale"
+            ></video>
             <img
+              v-else
               id="profile-img"
               :src="settings.heroPhoto || profileFallback"
               alt="Profile photo"
@@ -106,13 +117,13 @@
   import { MyName, Star } from '../design';
   import { Button } from '@/components/common';
   import { profile as profileFallback } from '@/assets/images';
-  import { getAvailableForWorkDate, textSplitterIntoChar } from '@/functions';
+  import { getAvailableForWorkDate, textSplitterIntoChar, isVideo } from '@/functions';
   import { useSettings } from '@/composables/useSettings';
 
   const { settings, fetchSettings } = useSettings();
 
   const whoAmI = ref(
-    'A freelance full-stack developer, cutting-edge technologies to deliver comprehensive solutions for your business.',
+    'A freelance developer and security researcher focused on building secure web applications and reliable system architectures.',
   );
   const AvailableForWorkDate = ref('');
 

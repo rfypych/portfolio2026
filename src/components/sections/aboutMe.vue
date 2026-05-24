@@ -34,7 +34,17 @@
       <div
         class="pointer-events-none col-span-full content-end rounded-lg select-none md:col-span-4"
       >
+        <video
+          v-if="settings.aboutPhoto && isVideo(settings.aboutPhoto)"
+          :src="settings.aboutPhoto"
+          autoplay
+          muted
+          loop
+          playsinline
+          class="aspect-[1/1.5] rounded-lg object-cover object-top mix-blend-screen brightness-90 grayscale"
+        ></video>
         <img
+          v-else
           :src="settings.aboutPhoto || profile2Fallback"
           class="aspect-[1/1.5] rounded-lg object-cover object-top mix-blend-screen brightness-90 grayscale"
           alt="Headshot"
@@ -44,9 +54,9 @@
         <p
           class="heading-4 relative w-full max-w-[40ch] leading-snug font-medium text-balance"
         >
-          With a passion for design and development, I take projects from
-          ideation to launch, ensuring a seamless journey that leaves a lasting
-          positive impact on the digital landscape and your business.
+          I specialize in web development and cybersecurity. My work process
+          focuses on practicality, clean code, and logical problem-solving,
+          taking projects from initial ideation to secure deployment.
         </p>
 
         <div
@@ -56,12 +66,11 @@
             ( ABOUT ME )
           </p>
           <p class="heading-6 font-fancy w-full text-balance sm:max-w-[40ch]">
-            Creating great web experiences is my primary focus. I ensure each
-            project leaves users with a feel-good sensation through meticulous
-            attention to detail and user-centric design principles. <br /><br />
-            When I'm not immersed in web development and design, you can find me
-            sharing insights about my freelance journey on <i>&Xopf;</i>,
-            loudly, playing music (Funk), or just relaxing.
+            Building secure digital experiences is my main priority. I pay
+            close attention to system architecture and proactive
+            problem-solving. <br /><br />
+            Outside of work, I spend my time playing games and listening to
+            music.
           </p>
         </div>
       </div>
@@ -76,7 +85,7 @@
     animateAboutMeSectionLeave,
   } from '@/animations';
   import { profile2 as profile2Fallback } from '@/assets/images';
-  import { textSplitterIntoChar } from '@/functions';
+  import { textSplitterIntoChar, isVideo } from '@/functions';
   import { onBeforeMount, onMounted, ref } from 'vue';
   import { useSettings } from '@/composables/useSettings';
 
@@ -85,7 +94,7 @@
 
   onBeforeMount(() => {
     aboutMe.value = textSplitterIntoChar(
-      'Programmer, Developer, Web-animator/',
+      'Developer, Security Researcher, AI Enthusiast/',
       true,
       true,
     );

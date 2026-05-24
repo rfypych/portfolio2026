@@ -66,14 +66,25 @@
         <div
           class="columns-gap relative order-first col-span-full flex h-[60vh] w-full items-start justify-center overflow-clip max-sm:order-last lg:order-last lg:col-span-6 lg:h-full"
         >
-          <img
-            v-for="(p, i) in people"
-            :key="p.id"
-            :class="{ hidden: index !== i }"
-            class="relative z-10 size-full rounded-lg object-cover object-center mix-blend-screen brightness-90 grayscale lg:h-[85svh]"
-            :src="p.profile"
-            :alt="p.author"
-          />
+          <template v-for="(p, i) in people" :key="p.id">
+            <video
+              v-if="p.profile && isVideo(p.profile)"
+              :class="{ hidden: index !== i }"
+              autoplay
+              muted
+              loop
+              playsinline
+              class="relative z-10 size-full rounded-lg object-cover object-center mix-blend-screen brightness-90 grayscale lg:h-[85svh]"
+              :src="p.profile"
+            ></video>
+            <img
+              v-else-if="p.profile"
+              :class="{ hidden: index !== i }"
+              class="relative z-10 size-full rounded-lg object-cover object-center mix-blend-screen brightness-90 grayscale lg:h-[85svh]"
+              :src="p.profile"
+              :alt="p.author"
+            />
+          </template>
           <div
             id="quote-overlay"
             class="bg-flax-smoke-500 absolute inset-0 z-50 rounded-lg"
@@ -93,7 +104,17 @@
               </div>
               <div class="col-span-3">
                 <div class="columns-gap flex w-full flex-col gap-y-4">
+                  <video
+                    v-if="p.profile && isVideo(p.profile)"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    class="aspect-square size-full rounded-md object-cover object-center mix-blend-screen brightness-90 grayscale"
+                    :src="p.profile"
+                  ></video>
                   <img
+                    v-else
                     class="aspect-square size-full rounded-md object-cover object-center mix-blend-screen brightness-90 grayscale"
                     :src="p.profile"
                     alt=""
@@ -137,7 +158,7 @@
   import { Button } from '../common';
   import { computed, onMounted, ref, nextTick } from 'vue';
   import { useWindowSize } from '@vueuse/core';
-  import { textSplitterIntoChar } from '@/functions';
+  import { textSplitterIntoChar, isVideo } from '@/functions';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
   import { useTestimonials } from '@/composables/useTestimonials';

@@ -91,14 +91,14 @@
                 <p class="text-sm font-medium text-white/60 mb-3">Media Upload (via Cloudinary)</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="flex flex-col gap-1.5">
-                    <label class="text-xs text-white/40 uppercase tracking-wider">Background Image</label>
-                    <input type="file" @change="(e) => handleFileUpload(e, 'imageBg')" accept="image/*" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
+                    <label class="text-xs text-white/40 uppercase tracking-wider">Background Media (Image, GIF, Video)</label>
+                    <input type="file" @change="(e) => handleFileUpload(e, 'imageBg')" accept="image/*,video/*,.gif" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
                     <span v-if="uploadingMedia.imageBg" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Uploading...</span>
                     <span v-else-if="projectForm.imageBg" class="text-xs text-green-400 truncate">✓ {{ projectForm.imageBg.split('/').pop() }}</span>
                   </div>
                   <div class="flex flex-col gap-1.5">
-                    <label class="text-xs text-white/40 uppercase tracking-wider">Project Video</label>
-                    <input type="file" @change="(e) => handleFileUpload(e, 'videoSrc')" accept="video/*" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
+                    <label class="text-xs text-white/40 uppercase tracking-wider">Project Media (Image, GIF, Video)</label>
+                    <input type="file" @change="(e) => handleFileUpload(e, 'videoSrc')" accept="image/*,video/*,.gif" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
                     <span v-if="uploadingMedia.videoSrc" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Uploading...</span>
                     <span v-else-if="projectForm.videoSrc" class="text-xs text-green-400 truncate">✓ {{ projectForm.videoSrc.split('/').pop() }}</span>
                   </div>
@@ -141,7 +141,8 @@
                     <button @click="moveItem(projects, idx, -1, reorderProjects)" :disabled="idx === 0" class="p-1 rounded hover:bg-white/10 disabled:opacity-20 transition-all text-white/50 hover:text-white text-xs">▲</button>
                     <button @click="moveItem(projects, idx, 1, reorderProjects)" :disabled="idx === projects.length - 1" class="p-1 rounded hover:bg-white/10 disabled:opacity-20 transition-all text-white/50 hover:text-white text-xs">▼</button>
                   </div>
-                  <img v-if="project.imageBg" :src="project.imageBg" class="w-12 h-12 rounded-lg object-cover" />
+                  <video v-if="project.imageBg && isVideo(project.imageBg)" :src="project.imageBg" class="w-12 h-12 rounded-lg object-cover" autoplay muted loop playsinline></video>
+                  <img v-else-if="project.imageBg" :src="project.imageBg" class="w-12 h-12 rounded-lg object-cover" />
                   <div v-else class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center text-white/30 text-xl">🖼</div>
                   <div>
                     <p class="font-semibold">{{ project.name }} <span class="text-white/30 text-xs ml-1">{{ project.year }}</span></p>
@@ -288,8 +289,8 @@
 
               <!-- Profile Photo Upload -->
               <div class="p-4 border border-white/10 rounded-xl bg-white/3">
-                <p class="text-sm font-medium text-white/60 mb-3">Profile Photo (via Cloudinary)</p>
-                <input type="file" @change="handleTestimonialPhotoUpload" accept="image/*" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
+                <p class="text-sm font-medium text-white/60 mb-3">Profile Photo/Media (via Cloudinary)</p>
+                <input type="file" @change="handleTestimonialPhotoUpload" accept="image/*,video/*,.gif" class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer">
                 <span v-if="uploadingTestimonialPhoto" class="text-xs text-flax-smoke-300 animate-pulse block mt-2">⬆ Uploading...</span>
                 <span v-else-if="testimonialForm.profile" class="text-xs text-green-400 block mt-2 truncate">✓ {{ testimonialForm.profile.split('/').pop() }}</span>
               </div>
@@ -330,7 +331,8 @@
                     <button @click="moveItem(testimonials, idx, -1, reorderTestimonials)" :disabled="idx === 0" class="p-1 rounded hover:bg-white/10 disabled:opacity-20 transition-all text-white/50 hover:text-white text-xs">▲</button>
                     <button @click="moveItem(testimonials, idx, 1, reorderTestimonials)" :disabled="idx === testimonials.length - 1" class="p-1 rounded hover:bg-white/10 disabled:opacity-20 transition-all text-white/50 hover:text-white text-xs">▼</button>
                   </div>
-                  <img v-if="t.profile" :src="t.profile" class="w-12 h-12 rounded-full object-cover" />
+                  <video v-if="t.profile && isVideo(t.profile)" :src="t.profile" class="w-12 h-12 rounded-full object-cover" autoplay muted loop playsinline></video>
+                  <img v-else-if="t.profile" :src="t.profile" class="w-12 h-12 rounded-full object-cover" />
                   <div v-else class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white/30 text-xl">👤</div>
                   <div>
                     <p class="font-semibold">{{ t.author }} <span class="text-white/30 text-xs ml-1">{{ t.position }}</span></p>
@@ -359,49 +361,45 @@
 
           <!-- Hero Photo -->
           <div class="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <h3 class="font-semibold text-flax-smoke-300 mb-1">Hero Section — Profile Photo</h3>
-            <p class="text-xs text-white/40 mb-5">Foto yang muncul di bagian kanan atas halaman utama.</p>
+            <h3 class="font-semibold text-flax-smoke-300 mb-1">Hero Section — Profile Media</h3>
+            <p class="text-xs text-white/40 mb-5">Media yang muncul di bagian kanan atas halaman utama. Bisa foto, GIF, atau video.</p>
             <div class="flex flex-col sm:flex-row items-start gap-6">
-              <div class="relative shrink-0">
-                <img
-                  :src="settings.heroPhoto || '/placeholder.png'"
-                  class="w-40 h-52 object-cover object-top rounded-xl grayscale brightness-90 border border-white/10"
-                  alt="Current hero photo"
-                />
-                <span v-if="!settings.heroPhoto" class="absolute inset-0 flex items-center justify-center text-white/20 text-sm">No photo</span>
+              <div class="relative shrink-0 w-40 h-52 rounded-xl overflow-hidden border border-white/10 bg-black">
+                <video v-if="isVideo(settings.heroPhoto)" :src="settings.heroPhoto" autoplay muted loop playsinline class="w-full h-full object-cover object-top"></video>
+                <img v-else-if="settings.heroPhoto" :src="settings.heroPhoto" class="w-full h-full object-cover object-top grayscale brightness-90" alt="Current hero media" />
+                <span v-else class="absolute inset-0 flex items-center justify-center text-white/20 text-sm">No media</span>
               </div>
               <div class="flex flex-col gap-3 w-full">
-                <label class="text-xs text-white/40 uppercase tracking-wider">Upload New Photo</label>
-                <input type="file" @change="e => uploadPhoto(e, 'hero')" accept="image/*"
+                <label class="text-xs text-white/40 uppercase tracking-wider">Upload New Media</label>
+                <input type="file" @change="e => uploadPhoto(e, 'hero')" accept="image/*,video/*,.gif"
                   class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer" />
                 <span v-if="uploadingHero" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Uploading...</span>
-                <span v-else-if="settings.heroPhoto" class="text-xs text-green-400">✓ Photo set</span>
+                <span v-else-if="settings.heroPhoto" class="text-xs text-green-400">✓ Media set</span>
               </div>
             </div>
           </div>
 
-          <!-- About Me Photo -->
+          <!-- About Me Media -->
           <div class="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <h3 class="font-semibold text-flax-smoke-300 mb-1">About Me Section — Profile Photo</h3>
-            <p class="text-xs text-white/40 mb-5">Foto yang muncul di bagian kiri section About Me (gelap).</p>
+            <h3 class="font-semibold text-flax-smoke-300 mb-1">About Me Section — Profile Media</h3>
+            <p class="text-xs text-white/40 mb-5">Media yang muncul di bagian kiri section About Me (gelap). Bisa foto, GIF, atau video.</p>
             <div class="flex flex-col sm:flex-row items-start gap-6">
-              <div class="relative shrink-0">
-                <img
-                  :src="settings.aboutPhoto || '/placeholder.png'"
-                  class="w-40 h-52 object-cover object-top rounded-xl grayscale brightness-90 border border-white/10"
-                  alt="Current about photo"
-                />
-                <span v-if="!settings.aboutPhoto" class="absolute inset-0 flex items-center justify-center text-white/20 text-sm">No photo</span>
+              <div class="relative shrink-0 w-40 h-52 rounded-xl overflow-hidden border border-white/10 bg-black">
+                <video v-if="isVideo(settings.aboutPhoto)" :src="settings.aboutPhoto" autoplay muted loop playsinline class="w-full h-full object-cover object-top"></video>
+                <img v-else-if="settings.aboutPhoto" :src="settings.aboutPhoto" class="w-full h-full object-cover object-top grayscale brightness-90" alt="Current about media" />
+                <span v-else class="absolute inset-0 flex items-center justify-center text-white/20 text-sm">No media</span>
               </div>
               <div class="flex flex-col gap-3 w-full">
-                <label class="text-xs text-white/40 uppercase tracking-wider">Upload New Photo</label>
-                <input type="file" @change="e => uploadPhoto(e, 'about')" accept="image/*"
+                <label class="text-xs text-white/40 uppercase tracking-wider">Upload New Media</label>
+                <input type="file" @change="e => uploadPhoto(e, 'about')" accept="image/*,video/*,.gif"
                   class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer" />
                 <span v-if="uploadingAbout" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Uploading...</span>
-                <span v-else-if="settings.aboutPhoto" class="text-xs text-green-400">✓ Photo set</span>
+                <span v-else-if="settings.aboutPhoto" class="text-xs text-green-400">✓ Media set</span>
               </div>
             </div>
-            <!-- Contact Background Media (New) -->
+          </div>
+
+          <!-- Contact Background Media -->
           <div class="bg-white/5 border border-white/10 p-6 rounded-2xl">
             <h3 class="font-semibold text-flax-smoke-300 mb-1">Contact Section — Background Media</h3>
             <p class="text-xs text-white/40 mb-5">Video latar belakang yang muncul di section Contact (paling bawah). Gunakan video pendek berukuran kecil.</p>
@@ -432,7 +430,6 @@
               </div>
             </div>
           </div>
-        </div>
         </div>
 
         <!-- Credentials Tab -->
@@ -465,12 +462,25 @@
                 </div>
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs text-white/40 uppercase tracking-wider">Badge Image</label>
+                <label class="text-xs text-white/40 uppercase tracking-wider">Badge Media</label>
                 <div class="flex items-center gap-4">
-                  <input type="file" @change="handleCertBadgeUpload" accept="image/*"
-                    class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer" />
-                  <span v-if="uploadingCertBadge" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Uploading...</span>
+                  <input type="file" @change="handleCertBadgeUpload" accept="image/*,video/*,.gif,.pdf"
+                    class="text-sm text-white/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white/70 hover:file:bg-white/20 file:transition-colors cursor-pointer" :disabled="uploadingCertBadge || !!pdfFilePending" />
+                  <span v-if="uploadingCertBadge" class="text-xs text-flax-smoke-300 animate-pulse">⬆ Processing...</span>
+                  <video v-else-if="isVideo(certForm.badgeUrl)" :src="certForm.badgeUrl" autoplay muted loop class="size-10 rounded-lg object-contain border border-white/10"></video>
                   <img v-else-if="certForm.badgeUrl" :src="certForm.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" />
+                </div>
+                
+                <div v-if="pdfFilePending" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 mt-1 bg-white/5 border border-white/10 rounded-lg gap-3">
+                  <div class="flex flex-col">
+                    <p class="text-sm font-semibold text-flax-smoke-300">PDF Detected ({{ pdfNumPages }} pages)</p>
+                    <p class="text-xs text-white/50">Select page to extract:</p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="number" v-model="pdfSelectedPage" min="1" :max="pdfNumPages" class="w-16 p-1.5 rounded bg-black/50 border border-white/10 outline-none focus:border-flax-smoke-400 text-center text-sm" />
+                    <button type="button" @click="confirmPdfPageSelection" class="px-3 py-1.5 bg-flax-smoke-300 text-black text-xs font-bold rounded hover:bg-flax-smoke-400 transition-colors">Convert</button>
+                    <button type="button" @click="cancelPdfSelection" class="px-3 py-1.5 bg-white/10 text-white text-xs rounded hover:bg-white/20 transition-colors">Cancel</button>
+                  </div>
                 </div>
               </div>
               <div class="flex gap-3">
@@ -496,8 +506,9 @@
                   <button @click="moveItem(certifications, idx, -1, reorderCertifications)" :disabled="idx === 0" class="p-1 rounded hover:bg-white/10 disabled:opacity-20 transition-all text-white/50 hover:text-white text-xs">▲</button>
                   <button @click="moveItem(certifications, idx, 1, reorderCertifications)" :disabled="idx === certifications.length - 1" class="p-1 rounded hover:bg-white/10 disabled:opacity-20 transition-all text-white/50 hover:text-white text-xs">▼</button>
                 </div>
-                <img v-if="cert.badgeUrl" :src="cert.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" />
-                <div v-else class="size-10 rounded-lg bg-white/10 flex items-center justify-center text-white/30 font-bold">{{ cert.title.charAt(0) }}</div>
+                <video v-if="cert.badgeUrl && isVideo(cert.badgeUrl)" :src="cert.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" autoplay muted loop playsinline></video>
+                <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" />
+                <div v-else class="size-10 rounded-lg bg-white/10 flex items-center justify-center text-white/30 font-bold">{{ cert.title ? cert.title.charAt(0) : 'C' }}</div>
                 <div>
                   <p class="font-semibold">{{ cert.title }}</p>
                   <p class="text-sm text-white/40">{{ cert.issuer }} — {{ cert.date }}</p>
@@ -517,7 +528,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, shallowRef } from 'vue';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 import { useRouter } from 'vue-router';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -527,6 +541,7 @@ import { useTestimonials, type Testimonial } from '../composables/useTestimonial
 import { useSettings } from '../composables/useSettings';
 import { useCertifications, type Certification } from '../composables/useCertifications';
 import { useCloudinary } from '../composables/useCloudinary';
+import { isVideo } from '../functions';
 
 const router = useRouter();
 const activeTab = ref<'projects' | 'services' | 'testimonials' | 'photos' | 'certifications'>('projects');
@@ -652,7 +667,7 @@ const cancelEditProject = () => {
 
 const submitProject = async () => {
   if (!projectForm.imageBg || !projectForm.videoSrc) {
-    alert('Please upload both background image and video first.');
+    alert('Please upload both background media and project main media first.');
     return;
   }
   const tagsArray = projectTags.value.split(',').map(t => t.trim()).filter(Boolean);
@@ -762,17 +777,89 @@ const certForm = reactive<Omit<Certification, 'id' | 'order'>>({
 const uploadingCertBadge = ref(false);
 const editingCertId = ref<string | null>(null);
 
+const pdfFilePending = shallowRef<File | null>(null);
+const pdfNumPages = ref<number>(0);
+const pdfSelectedPage = ref<number>(1);
+const pdfDocument = shallowRef<any>(null);
+
+const convertPdfPageAndUpload = async (pdfDoc: any, pageNumber: number, originalName: string) => {
+  uploadingCertBadge.value = true;
+  try {
+    const page = await pdfDoc.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error("Could not get canvas context");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    
+    canvas.toBlob(async (blob) => {
+      if (!blob) throw new Error("Failed to convert PDF to image");
+      const imgFile = new File([blob], originalName.replace(/\.pdf$/i, '.jpg'), { type: 'image/jpeg' });
+      const url = await uploadFile(imgFile);
+      certForm.badgeUrl = url;
+      
+      pdfFilePending.value = null;
+      pdfDocument.value = null;
+      uploadingCertBadge.value = false;
+    }, 'image/jpeg', 0.9);
+  } catch (err) {
+    alert('PDF Conversion failed: ' + (err as Error).message);
+    uploadingCertBadge.value = false;
+  }
+};
+
+const processPdf = async (file: File) => {
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+    
+    if (pdfDoc.numPages === 1) {
+      await convertPdfPageAndUpload(pdfDoc, 1, file.name);
+    } else {
+      pdfNumPages.value = pdfDoc.numPages;
+      pdfSelectedPage.value = 1;
+      pdfFilePending.value = file;
+      pdfDocument.value = pdfDoc;
+      uploadingCertBadge.value = false;
+    }
+  } catch (err) {
+    alert('PDF processing failed: ' + (err as Error).message);
+    uploadingCertBadge.value = false;
+  }
+};
+
+const confirmPdfPageSelection = async () => {
+  if (pdfDocument.value && pdfFilePending.value) {
+    await convertPdfPageAndUpload(pdfDocument.value, pdfSelectedPage.value, pdfFilePending.value.name);
+  }
+};
+
+const cancelPdfSelection = () => {
+  pdfFilePending.value = null;
+  pdfDocument.value = null;
+  uploadingCertBadge.value = false;
+};
+
 const handleCertBadgeUpload = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (!target.files?.length) return;
+  const file = target.files[0];
   uploadingCertBadge.value = true;
-  try {
-    const url = await uploadFile(target.files[0]);
-    certForm.badgeUrl = url;
-  } catch (error) {
-    alert('Upload failed: ' + (error as Error).message);
-  } finally {
-    uploadingCertBadge.value = false;
+  
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+    await processPdf(file);
+  } else {
+    try {
+      const url = await uploadFile(file);
+      certForm.badgeUrl = url;
+    } catch (error) {
+      alert('Upload failed: ' + (error as Error).message);
+    } finally {
+      uploadingCertBadge.value = false;
+    }
   }
 };
 

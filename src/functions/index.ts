@@ -72,4 +72,12 @@ const gotoSection = (url: string) => {
   lenis.scrollTo(url, { duration: 3 });
 };
 
-export { textSplitterIntoChar, getAvailableForWorkDate, gotoSection };
+const isVideo = (url: string | undefined | null): boolean => {
+  if (!url) return false;
+  const cleanUrl = url.split('?')[0].split('#')[0].toLowerCase();
+  if (cleanUrl.includes('/video/upload/')) return true;
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv', '.3gp', '.flv', '.wmv'];
+  return videoExtensions.some(ext => cleanUrl.endsWith(ext));
+};
+
+export { textSplitterIntoChar, getAvailableForWorkDate, gotoSection, isVideo };

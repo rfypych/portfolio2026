@@ -19,9 +19,9 @@
         <p
           class="heading-4 font-fancy col-span-8 w-full text-balance sm:font-semibold md:col-span-5"
         >
-          User-Friendly interface don't happen by chance, they are built with
-          intention. I code intuitive responsive solutions that make your users'
-          journey effortless
+          Secure and efficient systems require careful planning. I develop
+          functional web applications and conduct vulnerability assessments to
+          ensure system integrity and a safe user experience.
         </p>
       </div>
     </div>

@@ -19,7 +19,7 @@
         <p
           class="heading-4 text-flax-smoke-300 max-w-[30ch] text-center font-mono"
         >
-          Your design is a masterpiece waiting to become alive.
+          Ready to build a secure and efficient digital experience.
         </p>
         <h3
           id="make-it-happen"
@@ -59,7 +59,7 @@
               Working Globally
             </p>
             <p class="flex size-full items-center justify-start pr-2 pl-1">
-              Available Sep '24
+              BASED IN INDONESIA *
             </p>
           </div>
         </div>
@@ -92,7 +92,7 @@
 
   const { settings, fetchSettings } = useSettings();
 
-  const makeItHappen = ref("Let's Make it happen");
+  const makeItHappen = ref("Let's Connect");
   onBeforeMount(() => {
     makeItHappen.value = textSplitterIntoChar(makeItHappen.value);
   });

@@ -26,8 +26,9 @@
         <p
           class="heading-4 font-fancy col-span-8 w-full text-balance sm:font-semibold lg:col-span-7"
         >
-          Featured client projects that have been meticulously crafted with
-          passion and purpose over the years.
+          A selection of web development projects and security research. Some
+          details are intentionally omitted to comply with active Non-Disclosure
+          Agreements (NDAs).
         </p>
       </div>
     </div>
@@ -59,7 +60,17 @@
             <div
               class="flex-center relative aspect-square overflow-clip rounded-lg"
             >
+              <video
+                v-if="work.imageBg && isVideo(work.imageBg)"
+                autoplay
+                muted
+                loop
+                playsinline
+                class="absolute size-full object-cover select-none"
+                :src="work.imageBg"
+              ></video>
               <img
+                v-else
                 alt="work-background"
                 loading="lazy"
                 class="absolute size-full object-cover select-none"
@@ -70,13 +81,18 @@
               >
                 <!-- autoplay="false" -->
                 <video
+                  v-if="work.videoSrc && isVideo(work.videoSrc)"
                   ref="videoRefs"
                   :src="work.videoSrc"
                   muted
                   :autoplay="false"
-                  type="video/webm"
                   class="size-[80%] rounded-md object-contain blur transition-all duration-500 ease-in-out"
                 ></video>
+                <img
+                  v-else-if="work.videoSrc"
+                  class="size-[80%] rounded-md object-contain blur transition-all duration-500 ease-in-out"
+                  :src="work.videoSrc"
+                />
               </div>
             </div>
             <div>
@@ -112,7 +128,7 @@
 
 <script setup lang="ts">
   import { animateSplitText } from '@/animations';
-  import { textSplitterIntoChar } from '@/functions';
+  import { textSplitterIntoChar, isVideo } from '@/functions';
   import { computed, onBeforeMount, onMounted, ref, useTemplateRef, nextTick } from 'vue';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -190,7 +206,7 @@
   const handleIntersection = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
       const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && typeof video.play === 'function') {
         video.play().catch(() => {});
         video.classList.remove('blur');
       }
@@ -199,7 +215,7 @@
 
   const stopAllVideos = () => {
     videoRefs.value?.map((video: HTMLVideoElement) => {
-      if (video && !video.paused) {
+      if (video && typeof video.pause === 'function' && !video.paused) {
         video.pause();
         video.currentTime = 0; // Reset video to the start
       }
@@ -222,7 +238,9 @@
 
     // Observe each video element
     videoRefs.value?.forEach((video) => {
-      observer.observe(video);
+      if (video && typeof video.play === 'function') {
+        observer.observe(video);
+      }
     });
 
     animateSplitText(

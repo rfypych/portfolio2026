@@ -20,9 +20,9 @@
           ( Testimonials )
         </p>
         <p class="heading-6 font-fancy w-full text-balance sm:max-w-[40ch]">
-          Here's what my clients say about our collaboration. Their satisfaction
-          and meeting expectations are my top priorities, ensuring the best
-          experience possible.
+          Feedback from previous collaborations and security vulnerability
+          disclosures. Client confidentiality and system security are always my
+          top priorities in any project.
         </p>
       </div>
     </div>

@@ -22,7 +22,7 @@
           <span
             class="loading-text inline-block translate-y-full will-change-auto"
           >
-            Hetari
+            Rofi
           </span>
         </h3>
 

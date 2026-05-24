@@ -19,8 +19,8 @@
           ( Credentials )
         </p>
         <p class="heading-6 font-fancy w-full text-balance sm:max-w-[40ch]">
-          A curated collection of professional credentials, achievements, and qualifications that validate my
-          expertise and commitment to continuous learning in modern technologies.
+          A collection of acknowledged vulnerability reports and ongoing
+          exploration in modern web technologies and artificial intelligence.
         </p>
       </div>
     </div>
@@ -65,13 +65,40 @@
               transition: 'opacity 0.4s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)'
             }"
           >
-            <img :src="cert.badgeUrl" :alt="cert.title" class="w-48 h-48 lg:w-56 lg:h-56 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
+            <video
+              v-if="isVideo(cert.badgeUrl)"
+              :src="cert.badgeUrl"
+              autoplay
+              muted
+              loop
+              playsinline
+              class="w-48 h-48 lg:w-56 lg:h-56 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+            ></video>
+            <img
+              v-else
+              :src="cert.badgeUrl"
+              :alt="cert.title"
+              class="w-48 h-48 lg:w-56 lg:h-56 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+            />
           </div>
 
           <!-- Arrow & Mobile Badge -->
           <div class="mt-8 lg:mt-0 flex items-center gap-6 self-start lg:self-auto relative z-20">
             <div v-if="cert.badgeUrl" class="w-16 h-16 xl:hidden flex items-center justify-center drop-shadow-xl">
-              <img :src="cert.badgeUrl" class="w-full h-full object-contain" />
+              <video
+                v-if="isVideo(cert.badgeUrl)"
+                :src="cert.badgeUrl"
+                autoplay
+                muted
+                loop
+                playsinline
+                class="w-full h-full object-contain"
+              ></video>
+              <img
+                v-else
+                :src="cert.badgeUrl"
+                class="w-full h-full object-contain"
+              />
             </div>
             
             <div class="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full border border-current group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 transition-colors duration-500 overflow-hidden relative">
@@ -121,7 +148,20 @@
             <button @click="closeModal" class="absolute -top-12 md:-top-16 right-0 text-white/50 hover:text-white transition-colors">
               <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <img :src="selectedCert.badgeUrl" class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none" />
+            <video
+              v-if="selectedCert.badgeUrl && isVideo(selectedCert.badgeUrl)"
+              :src="selectedCert.badgeUrl"
+              autoplay
+              muted
+              loop
+              playsinline
+              class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none"
+            ></video>
+            <img
+              v-else
+              :src="selectedCert.badgeUrl"
+              class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none"
+            />
             <div class="flex flex-col items-center gap-4 text-white text-center">
               <h4 class="font-fancy text-2xl md:text-4xl font-extrabold uppercase">{{ selectedCert.title }}</h4>
               <a 
@@ -144,7 +184,7 @@
   import { onBeforeMount, onMounted, ref, nextTick, watch } from 'vue';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
-  import { textSplitterIntoChar } from '@/functions';
+  import { textSplitterIntoChar, isVideo } from '@/functions';
   import { animateSplitText } from '@/animations';
   import { useCertifications, type Certification } from '@/composables/useCertifications';
 

@@ -29,7 +29,7 @@
     <div class="grid w-full grid-cols-12">
       <div class="col-span-7 place-content-center md:col-span-6">
         <h6 class="heading-4 sm:heading-2 leading-none font-bold">
-          © {{ new Date().getFullYear() }} Huy <br />
+          © {{ new Date().getFullYear() }} Rofi <br />
           All rights reserved.
         </h6>
       </div>
@@ -37,7 +37,7 @@
       <div
         class="col-span-5 place-content-center max-sm:place-content-end md:col-span-3"
       >
-        <p class="heading-6 font-bold uppercase">Hetari's Local time</p>
+        <p class="heading-6 font-bold uppercase">0XRPHY's Local time</p>
         <p class="heading-6">{{ myLocalTime }}</p>
         <p class="heading-6 font-bold uppercase">Your Local time</p>
         <p class="heading-6">{{ userLocalTime }}</p>
