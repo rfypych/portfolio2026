@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "change-domain": "node change-domain.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.14",
