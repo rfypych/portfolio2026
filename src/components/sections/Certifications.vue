@@ -44,14 +44,18 @@
         <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between p-6 sm:p-10 transition-colors duration-500 group-hover:text-[#0B0B0A]">
           
           <div class="flex flex-col gap-2 md:gap-4 max-w-4xl relative z-20">
-            <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
-              ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
-            </span>
+            <div class="flex items-center flex-wrap gap-3">
+              <span v-if="cert.type === 'bounty'" class="px-2 py-1 rounded bg-current text-white group-hover:text-[#0B0B0A] text-xs font-bold uppercase tracking-wider transition-colors duration-500">Bug Bounty</span>
+              <span v-else-if="cert.type === 'hall-of-fame'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">Hall of Fame</span>
+              <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
+                ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
+              </span>
+            </div>
             <h4 class="font-fancy text-[clamp(2.5rem,5vw,6rem)] font-extrabold uppercase leading-[0.9] -tracking-tight text-balance">
               {{ cert.title }}
             </h4>
             <p class="text-base sm:text-lg md:text-xl font-medium opacity-80 mt-2">
-              Issuer: <span class="font-bold">{{ cert.issuer }}</span>
+              {{ cert.type === 'bounty' ? 'Target / Program:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : 'Issuer:' }} <span class="font-bold">{{ cert.issuer }}</span>
             </p>
           </div>
 

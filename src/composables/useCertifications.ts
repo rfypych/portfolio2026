@@ -20,6 +20,7 @@ export interface Certification {
   credentialUrl: string;
   badgeUrl: string;
   order?: number;
+  type?: 'certificate' | 'bounty' | 'hall-of-fame';
 }
 
 const COLLECTION = 'certifications';

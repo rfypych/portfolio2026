@@ -458,8 +458,16 @@
                   <input v-model="certForm.title" placeholder="e.g. AWS Solutions Architect" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors" required>
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs text-white/40 uppercase tracking-wider">Issuer</label>
-                  <input v-model="certForm.issuer" placeholder="e.g. Amazon Web Services" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors" required>
+                  <label class="text-xs text-white/40 uppercase tracking-wider">Type</label>
+                  <select v-model="certForm.type" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
+                    <option value="certificate" class="bg-[#1C1C1C]">Certificate</option>
+                    <option value="bounty" class="bg-[#1C1C1C]">Bug Bounty / Reward</option>
+                    <option value="hall-of-fame" class="bg-[#1C1C1C]">Hall of Fame</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs text-white/40 uppercase tracking-wider">{{ certForm.type === 'bounty' ? 'Target / Program' : certForm.type === 'hall-of-fame' ? 'Recognized By' : 'Issuer' }}</label>
+                  <input v-model="certForm.issuer" :placeholder="certForm.type === 'bounty' ? 'e.g. Citrahost' : certForm.type === 'hall-of-fame' ? 'e.g. Google' : 'e.g. Amazon Web Services'" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors" required>
                 </div>
                 <div class="flex flex-col gap-1.5">
                   <label class="text-xs text-white/40 uppercase tracking-wider">Date</label>
@@ -526,7 +534,10 @@
                 <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="size-10 rounded-lg object-contain border border-white/10" />
                 <div v-else class="size-10 rounded-lg bg-white/10 flex items-center justify-center text-white/30 font-bold">{{ cert.title ? cert.title.charAt(0) : 'C' }}</div>
                 <div>
-                  <p class="font-semibold">{{ cert.title }}</p>
+                  <div class="flex items-center gap-2">
+                    <p class="font-semibold">{{ cert.title }}</p>
+                    <span v-if="cert.type && cert.type !== 'certificate'" class="px-1.5 py-0.5 rounded bg-white/10 text-white/70 text-[10px] uppercase tracking-widest">{{ cert.type.replace('-', ' ') }}</span>
+                  </div>
                   <p class="text-sm text-white/40">{{ cert.issuer }} — {{ cert.date }}</p>
                 </div>
               </div>
@@ -854,6 +865,7 @@ const certForm = reactive<Omit<Certification, 'id' | 'order'>>({
   date: '',
   credentialUrl: '',
   badgeUrl: '',
+  type: 'certificate',
 });
 const uploadingCertBadge = ref(false);
 const editingCertId = ref<string | null>(null);
@@ -987,18 +999,19 @@ const handleCertBadgeUpload = async (event: Event) => {
   }
 };
 
-const editCert = (c: Certification) => {
-  editingCertId.value = c.id || null;
-  certForm.title = c.title || '';
-  certForm.issuer = c.issuer || '';
-  certForm.date = c.date || '';
-  certForm.credentialUrl = c.credentialUrl || '';
-  certForm.badgeUrl = c.badgeUrl || '';
+const editCert = (cert: Certification) => {
+  editingCertId.value = cert.id || null;
+  certForm.title = cert.title;
+  certForm.issuer = cert.issuer;
+  certForm.date = cert.date;
+  certForm.credentialUrl = cert.credentialUrl;
+  certForm.badgeUrl = cert.badgeUrl;
+  certForm.type = cert.type || 'certificate';
 };
 
 const cancelEditCert = () => {
   editingCertId.value = null;
-  Object.assign(certForm, { title: '', issuer: '', date: '', credentialUrl: '', badgeUrl: '' });
+  Object.assign(certForm, { title: '', issuer: '', date: '', credentialUrl: '', badgeUrl: '', type: 'certificate' });
 };
 
 const submitCertification = async () => {
