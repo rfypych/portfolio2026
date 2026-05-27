@@ -45,17 +45,8 @@
           
           <div class="flex flex-col gap-2 md:gap-4 max-w-4xl relative z-20">
             <div class="flex items-center flex-wrap gap-3">
-              <span v-if="cert.type === 'bounty'" class="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-black group-hover:bg-black group-hover:text-white text-[11px] sm:text-xs font-extrabold uppercase tracking-widest transition-all duration-500 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:scale-105">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                </span>
-                Bug Bounty
-              </span>
-              <span v-else-if="cert.type === 'hall-of-fame'" class="relative flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/30 group-hover:border-flax-smoke-300 text-[11px] sm:text-xs font-extrabold uppercase tracking-widest transition-all duration-500 hover:scale-105 hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]">
-                <svg class="w-3.5 h-3.5 text-yellow-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                Hall of Fame
-              </span>
+              <span v-if="cert.type === 'bounty'" class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 text-xs font-bold uppercase tracking-wider transition-colors duration-500">Bug Bounty</span>
+              <span v-else-if="cert.type === 'hall-of-fame'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">Hall of Fame</span>
               <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
                 ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
               </span>
