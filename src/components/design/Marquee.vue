@@ -12,11 +12,11 @@
         v-for="_ in 2"
         :id="`marquee-item-${_}`"
         :key="`marquee-item-${_}`"
-        class="sm:heading-1 flex w-full items-center text-3xl font-bold text-nowrap whitespace-nowrap max-sm:mx-6"
+        class="sm:heading-1 flex w-max items-center text-3xl font-bold text-nowrap whitespace-nowrap max-sm:mx-6"
       >
         <template v-for="(item, index) in ['Developer', 'Security Researcher', 'AI Enthusiast']" :key="index">
           {{ item }}
-          <div class="w-fit scale-50 sm:scale-75">
+          <div class="mx-2 inline-block scale-50 sm:scale-75">
             <svg
               class="ms-10 me-10"
               style="width: var(--heading-display)"
@@ -41,7 +41,7 @@
         v-for="_ in 2"
         :id="`marquee-item-${_}`"
         :key="`marquee-item-${_}`"
-        class="sm:heading-1 flex w-full items-center text-3xl font-bold text-nowrap whitespace-nowrap max-sm:mx-6"
+        class="sm:heading-1 flex w-max items-center text-3xl font-bold text-nowrap whitespace-nowrap max-sm:mx-6"
       >
         <template v-for="(item, index) in ['Developer', 'Security Researcher', 'AI Enthusiast']" :key="index">
           {{ item }}
