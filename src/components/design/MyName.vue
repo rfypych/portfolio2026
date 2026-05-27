@@ -1,6 +1,6 @@
 <template>
-  <h1 class="sr-only">Rofikul - Full Stack Developer</h1>
-  <h2 class="sr-only">Web Developer</h2>
+  <h1 class="sr-only">Rofikul - Developer, Security Researcher & AI Enthusiast</h1>
+  <h2 class="sr-only">Web Developer, Security Researcher, AI Enthusiast</h2>
 
   <MyEnName id="svg-my-en-name" :class="$attrs.class" />
 </template>
