@@ -20,6 +20,7 @@ export default defineConfig({
       hostname: 'https://rofikul.vercel.app',
       changefreq: 'weekly',
       priority: 1,
+      exclude: ['/google27c845ab1b2a56e0', '/google27c845ab1b2a56e0.html']
     }),
   ],
   resolve: {
