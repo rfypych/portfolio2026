@@ -1021,6 +1021,7 @@ const submitCertification = async () => {
     date: certForm.date || '',
     credentialUrl: certForm.credentialUrl || '',
     badgeUrl: certForm.badgeUrl || '',
+    type: certForm.type || 'certificate',
   };
 
   if (editingCertId.value) {
