@@ -12,7 +12,7 @@
         v-for="_ in 2"
         :id="`marquee-item-${_}`"
         :key="`marquee-item-${_}`"
-        class="sm:heading-1 flex w-max items-center text-3xl font-bold text-nowrap whitespace-nowrap max-sm:mx-6"
+        class="sm:heading-1 flex w-max items-center text-3xl font-bold text-nowrap whitespace-nowrap"
       >
         <template v-for="(item, index) in ['Developer', 'Security Researcher', 'AI Enthusiast']" :key="index">
           {{ item }}
@@ -41,7 +41,7 @@
         v-for="_ in 2"
         :id="`marquee-item-${_}`"
         :key="`marquee-item-${_}`"
-        class="sm:heading-1 flex w-max items-center text-3xl font-bold text-nowrap whitespace-nowrap max-sm:mx-6"
+        class="sm:heading-1 flex w-max items-center text-3xl font-bold text-nowrap whitespace-nowrap"
       >
         <template v-for="(item, index) in ['Developer', 'Security Researcher', 'AI Enthusiast']" :key="index">
           {{ item }}
