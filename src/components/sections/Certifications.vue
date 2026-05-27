@@ -45,8 +45,8 @@
           
           <div class="flex flex-col gap-2 md:gap-4 max-w-4xl relative z-20">
             <div class="flex items-center flex-wrap gap-3">
-              <span v-if="cert.type === 'bounty'" class="px-2.5 py-1 rounded bg-flax-smoke-950 text-flax-smoke-300 group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 text-xs font-bold uppercase tracking-wider transition-colors duration-500">Bug Bounty</span>
-              <span v-else-if="cert.type === 'hall-of-fame'" class="px-2.5 py-1 rounded border border-flax-smoke-950 text-flax-smoke-950 group-hover:border-[#0B0B0A] group-hover:text-[#0B0B0A] text-xs font-bold uppercase tracking-wider transition-colors duration-500">Hall of Fame</span>
+              <span v-if="cert.type === 'bounty'" class="px-2 py-1 rounded bg-white text-black group-hover:bg-black group-hover:text-white text-xs font-bold uppercase tracking-wider transition-colors duration-500">Bug Bounty</span>
+              <span v-else-if="cert.type === 'hall-of-fame'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">Hall of Fame</span>
               <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
                 ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
               </span>
