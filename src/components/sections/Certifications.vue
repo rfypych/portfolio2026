@@ -25,125 +25,63 @@
       </div>
     </div>
 
-    <!-- Main Screen Showcase (Top 3 Only) -->
-    <div class="mt-16 sm:mt-24 flex flex-col w-full border-t border-flax-smoke-300/30">
-      <div
-        v-for="(cert, index) in certifications.slice(0, 3)"
-        :key="cert.id"
-        @click="openModal(cert)"
-        class="cert-card group border-flax-smoke-500/50 relative w-full cursor-pointer border-b"
-        :style="{ opacity: 0, transform: 'translateY(60px)' }"
-        @mousemove="handleMouseMove($event, index)"
-        @mouseenter="handleMouseEnter(index)"
-        @mouseleave="handleMouseLeave(index)"
-      >
-        <!-- Content Row -->
-        <div class="relative z-40 flex items-center justify-between py-8 sm:py-10 md:py-14">
-
-          <!-- Left: Index Number -->
-          <div class="text-flax-smoke-400 font-title! w-16 shrink-0 text-center text-lg font-bold -tracking-wider sm:w-24 sm:text-xl md:text-2xl">
-            {{ (index + 1).toString().padStart(2, '0') }}
+    <!-- Bento Grid Showcase -->
+    <div class="mt-16 sm:mt-24 w-full">
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[300px]">
+        <div
+          v-for="(cert, index) in certifications.slice(0, visibleCount)"
+          :key="cert.id"
+          @click="handleBentoClick(cert)"
+          class="cert-card group relative cursor-pointer overflow-hidden rounded-3xl transition-transform duration-500 hover:scale-[1.02]"
+          :class="getBentoClasses(index)"
+          :style="{ opacity: 0, transform: 'translateY(60px)' }"
+        >
+          <!-- Background -->
+          <div v-if="cert.badgeUrl" class="absolute inset-0 bg-[#0B0B0A]">
+            <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105"></video>
+            <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105" />
+            <!-- Gradient Overlay for text readability -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0A] via-[#0B0B0A]/40 to-transparent"></div>
           </div>
+          <div v-else class="absolute inset-0 transition-colors duration-500" :class="getBgColor(index)"></div>
 
-          <!-- Center: Title & Meta -->
-          <div class="flex flex-1 flex-col gap-1.5 md:gap-2">
-            <h4 class="font-title! text-xl font-bold uppercase sm:text-2xl md:text-4xl lg:text-5xl -tracking-tight leading-[1.1] transition-colors duration-500 group-hover:text-flax-smoke-950">
-              {{ cert.title }}
-            </h4>
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-              <span class="border-flax-smoke-300 text-flax-smoke-600 rounded-full border px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest select-none transition-[background-color,color] duration-500 group-hover:bg-flax-smoke-300 group-hover:text-flax-smoke-900">
+          <!-- Content Wrapper -->
+          <div class="relative h-full flex flex-col justify-between p-6 sm:p-8 z-10" :class="getTextColor(index, !!cert.badgeUrl)">
+            <!-- Top: Badge & Arrow -->
+            <div class="flex justify-between items-start w-full">
+              <span class="inline-block border px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-md" :class="getBadgeColor(index, !!cert.badgeUrl)">
                 {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : cert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
               </span>
-              <span class="text-flax-smoke-400 text-xs font-medium uppercase tracking-wider sm:text-sm">
-                {{ cert.type === 'bounty' ? 'Target:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : cert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }}
-                <span class="text-flax-smoke-700 font-semibold">{{ cert.issuer }}</span>
-              </span>
-              <span class="text-flax-smoke-400 hidden text-xs font-medium uppercase tracking-wider sm:inline">
-                {{ cert.date }}
-              </span>
+              <!-- Arrow Icon -->
+              <div class="w-10 h-10 rounded-full border flex items-center justify-center opacity-0 -translate-y-4 translate-x-4 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-500" :class="getBadgeColor(index, !!cert.badgeUrl)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
+              </div>
             </div>
-            <!-- Writeup Buttons -->
-            <div class="mt-1 flex items-center gap-3 relative z-40">
-              <button
-                v-if="cert.writeupContent"
-                @click.stop="openWriteup(cert)"
-                class="text-flax-smoke-500 hover:text-flax-smoke-800 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors"
-              >
-                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                Read Writeup
-              </button>
-              <a
-                v-else-if="cert.writeupUrl"
-                :href="cert.writeupUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                @click.stop
-                class="text-flax-smoke-500 hover:text-flax-smoke-800 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors"
-              >
-                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                External Writeup
-              </a>
+
+            <!-- Bottom: Meta & Title -->
+            <div class="flex flex-col gap-2 mt-auto">
+              <div class="flex items-center gap-3 font-mono text-xs uppercase tracking-widest opacity-80">
+                <span>{{ cert.date }}</span>
+                <span>•</span>
+                <span class="truncate max-w-[200px]">{{ cert.issuer }}</span>
+              </div>
+              <h4 class="font-title! font-bold uppercase leading-[1.05] line-clamp-3" :class="getTitleSize(index)">
+                {{ cert.title }}
+              </h4>
             </div>
           </div>
-
-          <!-- Right: Badge + Arrow -->
-          <div class="flex shrink-0 items-center gap-4 sm:gap-6">
-            <!-- Mobile Badge -->
-            <div v-if="cert.badgeUrl" class="flex h-12 w-12 items-center justify-center xl:hidden">
-              <video
-                v-if="isVideo(cert.badgeUrl)"
-                :src="cert.badgeUrl"
-                autoplay muted loop playsinline
-                class="h-full w-full object-contain"
-              ></video>
-              <img
-                v-else
-                :src="cert.badgeUrl"
-                class="h-full w-full object-contain"
-              />
-            </div>
-
-            <!-- Arrow -->
-            <div class="border-flax-smoke-300 group-hover:bg-flax-smoke-300 group-hover:text-flax-smoke-900 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border transition-[background-color,color] duration-500 sm:h-14 sm:w-14 md:h-16 md:w-16">
-              <svg class="h-4 w-4 transition-transform duration-500 group-hover:rotate-45 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Desktop Floating Badge -->
-        <div
-          v-if="cert.badgeUrl"
-          class="pointer-events-none absolute top-0 left-0 z-30 hidden xl:flex"
-          :style="{
-            transform: `translate3d(calc(${mouseState[index]?.x || 0}px - 50%), calc(${mouseState[index]?.y || 0}px - 50%), 0) ${mouseState[index]?.active ? 'scale(1) rotate(0deg)' : 'scale(0.5) rotate(15deg)'}`,
-            opacity: mouseState[index]?.active ? 1 : 0,
-            transition: 'opacity 0.4s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)'
-          }"
-        >
-          <video
-            v-if="isVideo(cert.badgeUrl)"
-            :src="cert.badgeUrl"
-            autoplay muted loop playsinline
-            class="h-48 w-48 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:h-56 lg:w-56"
-          ></video>
-          <img
-            v-else
-            :src="cert.badgeUrl"
-            :alt="cert.title"
-            class="h-48 w-48 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:h-56 lg:w-56"
-          />
         </div>
       </div>
 
       <!-- Explore All Credentials Button -->
-      <div v-if="certifications.length > 3" class="mt-12 flex justify-center w-full relative z-50">
+      <div v-if="visibleCount < certifications.length" class="mt-12 flex justify-center w-full relative z-50">
         <button
-          @click="isCorkboardOpen = true"
+          @click="loadMore"
           class="group border-flax-smoke-300 text-flax-smoke-800 hover:bg-flax-smoke-300 hover:text-flax-smoke-950 flex items-center justify-center gap-4 rounded-full border px-10 py-4 font-bold uppercase tracking-widest transition-all duration-500"
         >
-          Explore All Credentials
-          <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 w-6 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
-            {{ certifications.length }}
+          Load More
+          <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 px-3 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
+            {{ certifications.length - visibleCount }} Left
           </span>
         </button>
       </div>
@@ -168,76 +106,6 @@
         No certifications yet.
       </p>
     </div>
-
-    <!-- Canvas Overlay -->
-    <Teleport to="body">
-      <transition name="writeup-slide">
-        <div
-          v-if="isCorkboardOpen"
-          class="fixed inset-0 z-[9000] bg-[#0B0B0A] overflow-hidden"
-          data-lenis-prevent
-        >
-          <!-- Canvas Background (Dot Grid) -->
-          <div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: radial-gradient(#b6b79f 1.5px, transparent 1.5px); background-size: 32px 32px;"></div>
-          
-          <!-- Navbar -->
-          <nav class="absolute top-0 left-0 w-full p-6 z-50 flex justify-between items-center pointer-events-none">
-            <button @click="isCorkboardOpen = false" class="pointer-events-auto flex items-center gap-2 group text-flax-smoke-50 hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-xs sm:text-sm">
-              <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-              Exit Canvas
-            </button>
-            <span class="px-3 py-1.5 rounded-full border border-flax-smoke-800 bg-[#0B0B0A] text-flax-smoke-300 text-[10px] font-bold uppercase tracking-widest pointer-events-auto shadow-lg">
-              Investigation Canvas
-            </span>
-          </nav>
-
-          <!-- Draggable Cards -->
-          <div class="absolute inset-0 w-full h-full">
-            <div 
-              v-for="(cert, index) in certifications" 
-              :key="'cork-'+cert.id"
-              class="absolute select-none cursor-grab active:cursor-grabbing hover:scale-105"
-              :style="{
-                left: cardPositions[index]?.x + 'px',
-                top: cardPositions[index]?.y + 'px',
-                zIndex: cardPositions[index]?.z,
-                transform: draggingIndex === index ? `scale(1.05)` : `rotate(${getRotation(index)}deg)`,
-                transition: draggingIndex === index ? 'none' : 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)'
-              }"
-              @pointerdown.stop="startDrag($event, index)"
-            >
-              
-              <!-- Image Card (Brutalist Polaroid) -->
-              <div v-if="cert.badgeUrl" class="bg-[#f4f4f1] p-3 sm:p-4 rounded-sm border border-[#B6B79F] shadow-[15px_15px_0_rgba(182,183,159,0.15)] w-64 sm:w-[320px] pointer-events-none">
-                <div class="w-full aspect-square bg-[#0B0B0A] overflow-hidden rounded-sm flex items-center justify-center">
-                  <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-contain pointer-events-none"></video>
-                  <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover pointer-events-none" />
-                </div>
-                <div class="mt-4 mb-2 flex flex-col items-center text-center">
-                  <p class="font-title! text-flax-smoke-950 text-lg font-bold uppercase leading-tight line-clamp-2">{{ cert.title }}</p>
-                  <p class="font-mono text-flax-smoke-600 font-bold text-[10px] mt-2 uppercase tracking-widest">{{ cert.date }}</p>
-                </div>
-              </div>
-
-              <!-- Text Card (Brutalist Note) -->
-              <div v-else class="bg-[#111110] p-6 sm:p-8 rounded-sm border border-flax-smoke-800 shadow-[15px_15px_0_rgba(182,183,159,0.1)] w-64 sm:w-[320px] aspect-square flex flex-col justify-between pointer-events-none">
-                <div>
-                  <span class="inline-block border border-flax-smoke-700 text-flax-smoke-300 px-2 py-0.5 rounded text-[10px] font-bold uppercase mb-4 tracking-widest">
-                    {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : 'Report' }}
-                  </span>
-                  <h4 class="font-title! text-flax-smoke-50 text-2xl font-bold uppercase leading-[1.1] line-clamp-4">{{ cert.title }}</h4>
-                </div>
-                <div>
-                  <p class="text-flax-smoke-500 text-[10px] font-medium uppercase tracking-widest mt-4">Target: <span class="font-bold text-flax-smoke-300">{{ cert.issuer }}</span></p>
-                  <p class="font-mono text-flax-smoke-600 font-bold text-[10px] mt-2 uppercase tracking-widest">{{ cert.date }}</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </transition>
-    </Teleport>
 
     <!-- Image Modal -->
     <Teleport to="body">
@@ -349,73 +217,67 @@
 
   const certHeading = ref('Credentials /');
 
-  // Canvas State
-  const isCorkboardOpen = ref(false);
+  // Bento Grid Expand Logic
+  const visibleCount = ref(7); // Initial items to show (7 forms a nice asymmetric block in a 4-col grid)
 
-  // Rotation logic
-  const getRotation = (index: number) => {
-    const rotations = [-4, 3, -2, 5, -3, 2, 0, -5, 4];
-    return rotations[index % rotations.length];
-  };
-
-  // Dragging logic
-  interface Position { x: number; y: number; z: number }
-  const cardPositions = ref<Position[]>([]);
-  const draggingIndex = ref(-1);
-  const dragOffset = ref({ x: 0, y: 0 });
-  let maxZ = 100;
-  let dragDistance = 0;
-
-  const generatePositions = () => {
-    if (typeof window === 'undefined') return;
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    cardPositions.value = certifications.value.map((_, i) => {
-      // Seeded random spread
-      const rand1 = Math.sin(i * 12.9898 + 1) * 43758.5453;
-      const rand2 = Math.sin(i * 78.233 + 2) * 43758.5453;
-      
-      const x = 50 + Math.abs(rand1 - Math.floor(rand1)) * Math.max(w - 400, 100);
-      const y = 100 + Math.abs(rand2 - Math.floor(rand2)) * Math.max(h - 450, 100);
-      return { x, y, z: i };
+  const loadMore = () => {
+    visibleCount.value = Math.min(visibleCount.value + 6, certifications.value.length);
+    nextTick(() => {
+      // Re-trigger reveal animation for newly added cards
+      gsap.to('.cert-card', {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power4.inOut',
+      });
+      ScrollTrigger.refresh();
     });
   };
 
-  const startDrag = (e: PointerEvent, index: number) => {
-    draggingIndex.value = index;
-    dragDistance = 0;
-    maxZ += 1;
-    cardPositions.value[index].z = maxZ;
-
-    dragOffset.value = {
-      x: e.clientX - cardPositions.value[index].x,
-      y: e.clientY - cardPositions.value[index].y
-    };
-
-    document.addEventListener('pointermove', handleDrag);
-    document.addEventListener('pointerup', stopDrag);
+  // Bento Grid Layout Logic
+  const getBentoClasses = (index: number) => {
+    // Pattern to create asymmetric bento grid. Repeat every 7 items.
+    const mod = index % 7;
+    
+    if (mod === 0) return 'col-span-1 md:col-span-2 lg:col-span-2 row-span-2'; // Large Hero
+    if (mod === 1) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
+    if (mod === 2) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
+    if (mod === 3) return 'col-span-1 md:col-span-2 lg:col-span-2 row-span-1'; // Wide Horizontal
+    if (mod === 4) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
+    if (mod === 5) return 'col-span-1 md:col-span-2 lg:col-span-2 row-span-1'; // Wide Horizontal
+    if (mod === 6) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
+    
+    return 'col-span-1 row-span-1';
   };
 
-  const handleDrag = (e: PointerEvent) => {
-    if (draggingIndex.value === -1) return;
-    dragDistance += Math.abs(e.movementX) + Math.abs(e.movementY);
-    cardPositions.value[draggingIndex.value].x = e.clientX - dragOffset.value.x;
-    cardPositions.value[draggingIndex.value].y = e.clientY - dragOffset.value.y;
+  const getTitleSize = (index: number) => {
+    const mod = index % 7;
+    if (mod === 0) return 'text-3xl md:text-5xl lg:text-6xl';
+    if (mod === 3 || mod === 5) return 'text-2xl md:text-3xl lg:text-4xl';
+    return 'text-2xl md:text-3xl';
   };
 
-  const stopDrag = () => {
-    document.removeEventListener('pointermove', handleDrag);
-    document.removeEventListener('pointerup', stopDrag);
-
-    // If we didn't drag much, treat it as a click
-    if (dragDistance < 10 && draggingIndex.value !== -1) {
-      const cert = certifications.value[draggingIndex.value];
-      if (cert) handleCorkboardClick(cert);
-    }
-    draggingIndex.value = -1;
+  const getBgColor = (index: number) => {
+    const colors = ['bg-[#111110]', 'bg-flax-smoke-300', 'bg-[#f4f4f1]'];
+    return colors[index % colors.length];
   };
 
-  const handleCorkboardClick = (cert: Certification) => {
+  const getTextColor = (index: number, hasImage: boolean) => {
+    if (hasImage) return 'text-[#f4f4f1]';
+    const bg = getBgColor(index);
+    if (bg === 'bg-[#111110]') return 'text-[#f4f4f1]';
+    return 'text-[#111110]';
+  };
+
+  const getBadgeColor = (index: number, hasImage: boolean) => {
+    if (hasImage) return 'border-white/30 text-white bg-black/20';
+    const bg = getBgColor(index);
+    if (bg === 'bg-[#111110]') return 'border-white/20 text-[#f4f4f1] bg-white/5';
+    return 'border-black/20 text-[#111110] bg-black/5';
+  };
+
+  const handleBentoClick = (cert: Certification) => {
     if (cert.writeupContent || cert.writeupUrl) {
       if (cert.writeupContent) {
         openWriteup(cert);
@@ -458,51 +320,7 @@
   const closeWriteup = () => {
     writeupCert.value = null;
     writeupHtml.value = '';
-    if (!isCorkboardOpen.value) {
-      document.body.style.overflow = '';
-    }
-  };
-
-  // Prevent background scrolling when canvas is open
-  watch(isCorkboardOpen, (isOpen) => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      if (cardPositions.value.length === 0) {
-        generatePositions();
-      }
-    } else if (!writeupCert.value) {
-      document.body.style.overflow = '';
-    }
-  });
-
-  // Mouse tracking state for floating badges
-  const mouseState = ref<Record<number, { x: number, y: number, active: boolean }>>({});
-
-  const handleMouseMove = (event: MouseEvent, index: number) => {
-    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
-    if (!mouseState.value[index]) {
-      mouseState.value[index] = { x, y, active: true };
-    } else {
-      mouseState.value[index].x = x;
-      mouseState.value[index].y = y;
-    }
-  };
-
-  const handleMouseEnter = (index: number) => {
-    if (!mouseState.value[index]) {
-      mouseState.value[index] = { x: 0, y: 0, active: true };
-    } else {
-      mouseState.value[index].active = true;
-    }
-  };
-
-  const handleMouseLeave = (index: number) => {
-    if (mouseState.value[index]) {
-      mouseState.value[index].active = false;
-    }
+    document.body.style.overflow = '';
   };
 
   onBeforeMount(() => {
