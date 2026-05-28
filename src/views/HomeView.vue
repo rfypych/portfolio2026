@@ -104,7 +104,7 @@
   });
 
   onMounted(() => {
-    document.body.classList.add('stop-scrolling');
+    // Scroll lock logic is now handled entirely by LoadingScreen.vue to prevent bugs on remount
     // TODO:
     // window.scrollTo(0, 0);
 
@@ -114,6 +114,6 @@
   });
 
   onUnmounted(() => {
-    document.body.classList.remove('stop-scrolling');
+    // Handled by LoadingScreen now
   });
 </script>

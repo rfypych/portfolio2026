@@ -3,10 +3,10 @@
     
     <!-- Navbar (simplified back button) -->
     <nav class="fixed top-0 left-0 w-full p-6 sm:p-10 z-50 flex justify-between items-center bg-[#0B0B0A]/80 backdrop-blur-md border-b border-white/10">
-      <router-link to="/#certifications-section" class="flex items-center gap-2 group hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-sm text-white">
+      <button @click="goBack" class="flex items-center gap-2 group hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-sm text-white">
         <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         Back to Portfolio
-      </router-link>
+      </button>
       <div class="hidden sm:block">
         <span class="px-3 py-1.5 rounded-full border border-flax-smoke-800 bg-[#0B0B0A] text-flax-smoke-300 text-[10px] font-bold uppercase tracking-widest shadow-lg">
           Investigation Board
@@ -166,6 +166,14 @@ const handleBentoClick = (cert: Certification) => {
   } else {
     selectedCert.value = cert;
     document.body.style.overflow = 'hidden';
+  }
+};
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push('/#certifications-section');
   }
 };
 

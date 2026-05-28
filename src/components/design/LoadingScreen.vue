@@ -106,6 +106,7 @@
       return;
     }
     sessionStorage.setItem('portfolioLoaded', 'true');
+    document.body.classList.add('stop-scrolling');
 
     index.value++;
     pathData.value = initialPath.value;
