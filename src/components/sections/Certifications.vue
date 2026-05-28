@@ -52,7 +52,7 @@
           @mouseleave="handleMouseLeave(index)"
         >
           <!-- Content Row -->
-          <div class="relative z-10 flex items-center justify-between py-8 sm:py-10 md:py-14">
+          <div class="relative z-40 flex items-center justify-between py-8 sm:py-10 md:py-14">
 
             <!-- Left: Index Number -->
             <div class="text-flax-smoke-400 font-title! w-16 shrink-0 text-center text-lg font-bold -tracking-wider sm:w-24 sm:text-xl md:text-2xl">
@@ -77,7 +77,7 @@
                 </span>
               </div>
               <!-- Writeup Buttons -->
-              <div class="mt-1 flex items-center gap-3">
+              <div class="mt-1 flex items-center gap-3 relative z-40">
                 <button
                   v-if="cert.writeupContent"
                   @click.stop="openWriteup(cert)"
