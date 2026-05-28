@@ -460,7 +460,8 @@
                 <div class="flex flex-col gap-1.5">
                   <label class="text-xs text-white/40 uppercase tracking-wider">Type</label>
                   <select v-model="certForm.type" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
-                    <option value="certificate" class="bg-[#1C1C1C]">Certificate</option>
+                    <option value="certificate" class="bg-[#1C1C1C]">Course Certificate</option>
+                    <option value="vd-certificate" class="bg-[#1C1C1C]">Vulnerability Disclosure Certificate</option>
                     <option value="bounty" class="bg-[#1C1C1C]">Bug Bounty / Reward</option>
                     <option value="hall-of-fame" class="bg-[#1C1C1C]">Hall of Fame</option>
                   </select>
@@ -536,7 +537,9 @@
                 <div>
                   <div class="flex items-center gap-2">
                     <p class="font-semibold">{{ cert.title }}</p>
-                    <span v-if="cert.type && cert.type !== 'certificate'" class="px-1.5 py-0.5 rounded bg-white/10 text-white/70 text-[10px] uppercase tracking-widest">{{ cert.type.replace('-', ' ') }}</span>
+                    <span class="px-1.5 py-0.5 rounded bg-white/10 text-white/70 text-[10px] uppercase tracking-widest">
+                      {{ !cert.type || cert.type === 'certificate' ? 'COURSE CERTIFICATE' : cert.type === 'vd-certificate' ? 'VD CERTIFICATE' : cert.type.replace('-', ' ') }}
+                    </span>
                   </div>
                   <p class="text-sm text-white/40">{{ cert.issuer }} — {{ cert.date }}</p>
                 </div>

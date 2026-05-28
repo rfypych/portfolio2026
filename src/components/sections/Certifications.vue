@@ -47,6 +47,8 @@
             <div class="flex items-center flex-wrap gap-3">
               <span v-if="cert.type === 'bounty'" class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 text-xs font-bold uppercase tracking-wider transition-colors duration-500">Bug Bounty</span>
               <span v-else-if="cert.type === 'hall-of-fame'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">Hall of Fame</span>
+              <span v-else-if="cert.type === 'vd-certificate'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">VD Certificate</span>
+              <span v-else class="px-2 py-1 rounded border border-current opacity-80 text-xs font-bold uppercase tracking-wider">Course Certificate</span>
               <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
                 ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
               </span>
@@ -55,7 +57,7 @@
               {{ cert.title }}
             </h4>
             <p class="text-base sm:text-lg md:text-xl font-medium opacity-80 mt-2">
-              {{ cert.type === 'bounty' ? 'Target / Program:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : 'Issuer:' }} <span class="font-bold">{{ cert.issuer }}</span>
+              {{ cert.type === 'bounty' ? 'Target / Program:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : cert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }} <span class="font-bold">{{ cert.issuer }}</span>
             </p>
           </div>
 
