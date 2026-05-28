@@ -169,88 +169,70 @@
       </p>
     </div>
 
-    <!-- Corkboard Overlay -->
+    <!-- Canvas Overlay -->
     <Teleport to="body">
       <transition name="writeup-slide">
         <div
           v-if="isCorkboardOpen"
-          class="fixed inset-0 z-[9000] bg-[#0B0B0A] overflow-x-hidden overflow-y-auto"
+          class="fixed inset-0 z-[9000] bg-[#0B0B0A] overflow-hidden"
           data-lenis-prevent
         >
-          <!-- Corkboard Background (Dot Grid) -->
-          <div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: radial-gradient(#b6b79f 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+          <!-- Canvas Background (Dot Grid) -->
+          <div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: radial-gradient(#b6b79f 1.5px, transparent 1.5px); background-size: 32px 32px;"></div>
           
           <!-- Navbar -->
-          <nav class="sticky top-0 left-0 w-full p-4 sm:p-6 z-50 flex justify-between items-center bg-[#0B0B0A]/80 backdrop-blur-md border-b border-flax-smoke-300/10">
-            <button @click="isCorkboardOpen = false" class="flex items-center gap-2 group text-flax-smoke-50 hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-xs sm:text-sm">
+          <nav class="absolute top-0 left-0 w-full p-6 z-50 flex justify-between items-center pointer-events-none">
+            <button @click="isCorkboardOpen = false" class="pointer-events-auto flex items-center gap-2 group text-flax-smoke-50 hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-xs sm:text-sm">
               <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-              Back to Site
+              Exit Canvas
             </button>
-            <span class="px-3 py-1.5 rounded bg-flax-smoke-300 text-[#0B0B0A] text-[10px] font-bold uppercase tracking-wider">
-              Investigation Board
+            <span class="px-3 py-1.5 rounded-full border border-flax-smoke-800 bg-[#0B0B0A] text-flax-smoke-300 text-[10px] font-bold uppercase tracking-widest pointer-events-auto shadow-lg">
+              Investigation Canvas
             </span>
           </nav>
 
-          <!-- Corkboard Content -->
-          <div class="relative min-h-screen p-8 sm:p-12 md:p-20">
-            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24">
+          <!-- Draggable Cards -->
+          <div class="absolute inset-0 w-full h-full">
+            <div 
+              v-for="(cert, index) in certifications" 
+              :key="'cork-'+cert.id"
+              class="absolute select-none cursor-grab active:cursor-grabbing hover:scale-105"
+              :style="{
+                left: cardPositions[index]?.x + 'px',
+                top: cardPositions[index]?.y + 'px',
+                zIndex: cardPositions[index]?.z,
+                transform: draggingIndex === index ? `scale(1.05)` : `rotate(${getRotation(index)}deg)`,
+                transition: draggingIndex === index ? 'none' : 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)'
+              }"
+              @pointerdown.stop="startDrag($event, index)"
+            >
               
-              <!-- Cards -->
-              <div 
-                v-for="(cert, index) in certifications" 
-                :key="'cork-'+cert.id"
-                class="relative group cursor-pointer transition-all duration-500 hover:z-50 hover:scale-105"
-                :style="{ transform: `rotate(${getRotation(index)}deg)`, marginTop: `${getMargin(index)}px` }"
-                @click="handleCorkboardClick(cert)"
-              >
-                
-                <!-- Polaroid Style (Has Image) -->
-                <div v-if="cert.badgeUrl" class="bg-[#f4f4f1] p-3 pb-10 sm:p-4 sm:pb-12 rounded shadow-[0_15px_35px_rgba(0,0,0,0.6)] group-hover:shadow-[0_25px_50px_rgba(0,0,0,0.8)] transition-shadow w-64 sm:w-80 relative group-hover:rotate-0" :style="{ transition: 'transform 0.4s ease' }">
-                  <!-- Tape -->
-                  <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/40 backdrop-blur-sm shadow-sm rotate-[-3deg] z-10" style="clip-path: polygon(0 5%, 100% 0, 95% 95%, 5% 100%);"></div>
-                  
-                  <div class="w-full aspect-square bg-[#0B0B0A] overflow-hidden rounded-sm flex items-center justify-center">
-                    <video
-                      v-if="isVideo(cert.badgeUrl)"
-                      :src="cert.badgeUrl"
-                      autoplay muted loop playsinline
-                      class="w-full h-full object-contain"
-                    ></video>
-                    <img
-                      v-else
-                      :src="cert.badgeUrl"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div class="absolute bottom-3 left-4 right-4 text-center">
-                    <p class="font-fancy text-flax-smoke-950 font-bold uppercase text-sm truncate">{{ cert.title }}</p>
-                    <p class="font-mono text-flax-smoke-500 font-bold text-[10px] mt-0.5">{{ cert.date }}</p>
-                  </div>
+              <!-- Image Card (Brutalist Polaroid) -->
+              <div v-if="cert.badgeUrl" class="bg-[#f4f4f1] p-3 sm:p-4 rounded-sm border border-[#B6B79F] shadow-[15px_15px_0_rgba(182,183,159,0.15)] w-64 sm:w-[320px] pointer-events-none">
+                <div class="w-full aspect-square bg-[#0B0B0A] overflow-hidden rounded-sm flex items-center justify-center">
+                  <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-contain pointer-events-none"></video>
+                  <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover pointer-events-none" />
                 </div>
-
-                <!-- Sticky Note Style (No Image, usually Bounty) -->
-                <div v-else class="bg-flax-smoke-300 p-6 sm:p-8 rounded shadow-[0_15px_35px_rgba(0,0,0,0.6)] group-hover:shadow-[0_25px_50px_rgba(0,0,0,0.8)] transition-shadow w-64 sm:w-80 aspect-square flex flex-col justify-between relative">
-                  <!-- Pin -->
-                  <div class="absolute top-4 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-red-600 shadow-md z-10">
-                    <div class="absolute inset-0 rounded-full bg-white/30 translate-x-[-1px] translate-y-[-1px]"></div>
-                    <div class="absolute w-1 h-3 bg-gray-400 -bottom-2 left-1/2 -translate-x-1/2 -z-10 rotate-12"></div>
-                  </div>
-
-                  <div class="mt-4">
-                    <span class="inline-block border border-flax-smoke-800/20 text-flax-smoke-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase mb-3">
-                      {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : 'Report' }}
-                    </span>
-                    <h4 class="font-title! text-flax-smoke-950 text-xl font-bold uppercase leading-[1.1] line-clamp-4">{{ cert.title }}</h4>
-                  </div>
-                  
-                  <div>
-                    <p class="text-flax-smoke-800 text-xs font-medium uppercase mt-4">Target: <span class="font-bold">{{ cert.issuer }}</span></p>
-                    <p class="font-mono text-flax-smoke-600 font-bold text-[10px] mt-1">{{ cert.date }}</p>
-                  </div>
+                <div class="mt-4 mb-2 flex flex-col items-center text-center">
+                  <p class="font-title! text-flax-smoke-950 text-lg font-bold uppercase leading-tight line-clamp-2">{{ cert.title }}</p>
+                  <p class="font-mono text-flax-smoke-600 font-bold text-[10px] mt-2 uppercase tracking-widest">{{ cert.date }}</p>
                 </div>
-
               </div>
-              
+
+              <!-- Text Card (Brutalist Note) -->
+              <div v-else class="bg-[#111110] p-6 sm:p-8 rounded-sm border border-flax-smoke-800 shadow-[15px_15px_0_rgba(182,183,159,0.1)] w-64 sm:w-[320px] aspect-square flex flex-col justify-between pointer-events-none">
+                <div>
+                  <span class="inline-block border border-flax-smoke-700 text-flax-smoke-300 px-2 py-0.5 rounded text-[10px] font-bold uppercase mb-4 tracking-widest">
+                    {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : 'Report' }}
+                  </span>
+                  <h4 class="font-title! text-flax-smoke-50 text-2xl font-bold uppercase leading-[1.1] line-clamp-4">{{ cert.title }}</h4>
+                </div>
+                <div>
+                  <p class="text-flax-smoke-500 text-[10px] font-medium uppercase tracking-widest mt-4">Target: <span class="font-bold text-flax-smoke-300">{{ cert.issuer }}</span></p>
+                  <p class="font-mono text-flax-smoke-600 font-bold text-[10px] mt-2 uppercase tracking-widest">{{ cert.date }}</p>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -367,17 +349,70 @@
 
   const certHeading = ref('Credentials /');
 
-  // Corkboard State
+  // Canvas State
   const isCorkboardOpen = ref(false);
 
+  // Rotation logic
   const getRotation = (index: number) => {
-    const rotations = [-3, 4, -2, 5, -4, 2, 0, -5, 3];
+    const rotations = [-4, 3, -2, 5, -3, 2, 0, -5, 4];
     return rotations[index % rotations.length];
   };
 
-  const getMargin = (index: number) => {
-    const margins = [30, 0, 50, -20, 40, 10, 60, -10];
-    return margins[index % margins.length];
+  // Dragging logic
+  interface Position { x: number; y: number; z: number }
+  const cardPositions = ref<Position[]>([]);
+  const draggingIndex = ref(-1);
+  const dragOffset = ref({ x: 0, y: 0 });
+  let maxZ = 100;
+  let dragDistance = 0;
+
+  const generatePositions = () => {
+    if (typeof window === 'undefined') return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    cardPositions.value = certifications.value.map((_, i) => {
+      // Seeded random spread
+      const rand1 = Math.sin(i * 12.9898 + 1) * 43758.5453;
+      const rand2 = Math.sin(i * 78.233 + 2) * 43758.5453;
+      
+      const x = 50 + Math.abs(rand1 - Math.floor(rand1)) * Math.max(w - 400, 100);
+      const y = 100 + Math.abs(rand2 - Math.floor(rand2)) * Math.max(h - 450, 100);
+      return { x, y, z: i };
+    });
+  };
+
+  const startDrag = (e: PointerEvent, index: number) => {
+    draggingIndex.value = index;
+    dragDistance = 0;
+    maxZ += 1;
+    cardPositions.value[index].z = maxZ;
+
+    dragOffset.value = {
+      x: e.clientX - cardPositions.value[index].x,
+      y: e.clientY - cardPositions.value[index].y
+    };
+
+    document.addEventListener('pointermove', handleDrag);
+    document.addEventListener('pointerup', stopDrag);
+  };
+
+  const handleDrag = (e: PointerEvent) => {
+    if (draggingIndex.value === -1) return;
+    dragDistance += Math.abs(e.movementX) + Math.abs(e.movementY);
+    cardPositions.value[draggingIndex.value].x = e.clientX - dragOffset.value.x;
+    cardPositions.value[draggingIndex.value].y = e.clientY - dragOffset.value.y;
+  };
+
+  const stopDrag = () => {
+    document.removeEventListener('pointermove', handleDrag);
+    document.removeEventListener('pointerup', stopDrag);
+
+    // If we didn't drag much, treat it as a click
+    if (dragDistance < 10 && draggingIndex.value !== -1) {
+      const cert = certifications.value[draggingIndex.value];
+      if (cert) handleCorkboardClick(cert);
+    }
+    draggingIndex.value = -1;
   };
 
   const handleCorkboardClick = (cert: Certification) => {
@@ -428,10 +463,13 @@
     }
   };
 
-  // Prevent background scrolling when corkboard is open
+  // Prevent background scrolling when canvas is open
   watch(isCorkboardOpen, (isOpen) => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      if (cardPositions.value.length === 0) {
+        generatePositions();
+      }
     } else if (!writeupCert.value) {
       document.body.style.overflow = '';
     }
