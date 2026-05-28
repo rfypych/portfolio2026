@@ -45,10 +45,9 @@
           
           <div class="flex flex-col gap-2 md:gap-4 max-w-4xl relative z-20">
             <div class="flex items-center flex-wrap gap-3">
-              <span v-if="cert.type === 'bounty'" class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 text-xs font-bold uppercase tracking-wider transition-colors duration-500">Bug Bounty</span>
-              <span v-else-if="cert.type === 'hall-of-fame'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">Hall of Fame</span>
-              <span v-else-if="cert.type === 'vd-certificate'" class="px-2 py-1 rounded border border-current text-xs font-bold uppercase tracking-wider">VD Certificate</span>
-              <span v-else class="px-2 py-1 rounded border border-current opacity-80 text-xs font-bold uppercase tracking-wider">Course Certificate</span>
+              <span class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 text-xs font-bold uppercase tracking-wider transition-colors duration-500">
+                {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : cert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
+              </span>
               <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
                 ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
               </span>
@@ -59,6 +58,16 @@
             <p class="text-base sm:text-lg md:text-xl font-medium opacity-80 mt-2">
               {{ cert.type === 'bounty' ? 'Target / Program:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : cert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }} <span class="font-bold">{{ cert.issuer }}</span>
             </p>
+            <a
+              v-if="cert.writeupUrl"
+              :href="cert.writeupUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 mt-1 text-sm font-semibold uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity duration-500 hover:underline underline-offset-4 w-fit"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+              Read Writeup
+            </a>
           </div>
 
           <!-- Floating Badge (Desktop) -->

@@ -478,6 +478,10 @@
                   <label class="text-xs text-white/40 uppercase tracking-wider">Credential URL</label>
                   <input v-model="certForm.credentialUrl" placeholder="https://..." class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
                 </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs text-white/40 uppercase tracking-wider">Writeup URL</label>
+                  <input v-model="certForm.writeupUrl" placeholder="https://blog.example.com/writeup" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
+                </div>
               </div>
                 <div class="flex flex-col gap-1.5">
                   <label class="text-xs text-white/40 uppercase tracking-wider">Badge Media</label>
@@ -868,6 +872,7 @@ const certForm = reactive<Omit<Certification, 'id' | 'order'>>({
   date: '',
   credentialUrl: '',
   badgeUrl: '',
+  writeupUrl: '',
   type: 'certificate',
 });
 const uploadingCertBadge = ref(false);
@@ -1009,12 +1014,13 @@ const editCert = (cert: Certification) => {
   certForm.date = cert.date;
   certForm.credentialUrl = cert.credentialUrl;
   certForm.badgeUrl = cert.badgeUrl;
+  certForm.writeupUrl = cert.writeupUrl || '';
   certForm.type = cert.type || 'certificate';
 };
 
 const cancelEditCert = () => {
   editingCertId.value = null;
-  Object.assign(certForm, { title: '', issuer: '', date: '', credentialUrl: '', badgeUrl: '', type: 'certificate' });
+  Object.assign(certForm, { title: '', issuer: '', date: '', credentialUrl: '', badgeUrl: '', writeupUrl: '', type: 'certificate' });
 };
 
 const submitCertification = async () => {
@@ -1024,6 +1030,7 @@ const submitCertification = async () => {
     date: certForm.date || '',
     credentialUrl: certForm.credentialUrl || '',
     badgeUrl: certForm.badgeUrl || '',
+    writeupUrl: certForm.writeupUrl || '',
     type: certForm.type || 'certificate',
   };
 
