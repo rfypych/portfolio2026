@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-[#0B0B0A] text-flax-smoke-50 font-body relative overflow-x-hidden selection:bg-flax-smoke-300 selection:text-black">
     <!-- Navbar (simplified back button) -->
     <nav class="fixed top-0 left-0 w-full p-6 sm:p-10 z-50 flex justify-between items-center bg-[#0B0B0A]/80 backdrop-blur-md border-b border-white/10">
-      <button @click="$router.push('/#certifications')" class="flex items-center gap-2 group hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-sm">
+      <button @click="goBack" class="flex items-center gap-2 group hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-sm">
         <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         Back to Portfolio
       </button>
@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Certification } from '../composables/useCertifications';
@@ -70,6 +70,17 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
 const route = useRoute();
+const router = useRouter();
+
+const goBack = () => {
+  // If there's history (user came from the portfolio), go back to preserve scroll
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    // Fallback: direct visit to writeup URL
+    router.push('/#certifications');
+  }
+};
 
 const cert = ref<Certification | null>(null);
 const loading = ref(true);
