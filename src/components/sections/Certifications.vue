@@ -164,7 +164,7 @@
       <transition name="fade">
         <div 
           v-if="selectedCert" 
-          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 sm:p-10 backdrop-blur-md" 
+          class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4 sm:p-10 backdrop-blur-md" 
           @click="closeModal" 
           data-lenis-prevent
         >
@@ -207,7 +207,7 @@
       <transition name="writeup-slide">
         <div
           v-if="writeupCert"
-          class="fixed inset-0 z-[100] bg-[#0B0B0A] overflow-y-auto"
+          class="fixed inset-0 z-[10000] bg-[#0B0B0A] overflow-y-auto"
           data-lenis-prevent
         >
           <!-- Writeup Navbar -->
