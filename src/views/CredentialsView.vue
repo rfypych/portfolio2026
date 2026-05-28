@@ -31,17 +31,17 @@
           v-for="(cert, index) in certifications"
           :key="cert.id"
           @click="handleBentoClick(cert)"
-          class="cred-card group relative cursor-pointer overflow-hidden rounded-3xl transition-transform duration-500 hover:scale-[1.02]"
+          class="cred-card group relative cursor-pointer overflow-hidden rounded-3xl transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]"
           :class="getBentoClasses(index)"
           :style="{ opacity: 0, transform: 'translateY(100px)' }"
         >
           <!-- Background -->
           <div v-if="cert.badgeUrl" class="absolute inset-0 bg-[#0B0B0A]">
-            <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105"></video>
-            <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105" />
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0A] via-[#0B0B0A]/40 to-transparent"></div>
+            <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"></video>
+            <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0A] via-[#0B0B0A]/40 to-transparent transition-opacity duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-80"></div>
           </div>
-          <div v-else class="absolute inset-0 transition-colors duration-500" :class="getBgColor(index)"></div>
+          <div v-else class="absolute inset-0 transition-colors duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]" :class="getBgColor(index)"></div>
 
           <!-- Content Wrapper -->
           <div class="relative h-full flex flex-col justify-between p-6 sm:p-8 z-10" :class="getTextColor(index, !!cert.badgeUrl)">
@@ -49,8 +49,8 @@
               <span class="inline-block border px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-md" :class="getBadgeColor(index, !!cert.badgeUrl)">
                 {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : cert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
               </span>
-              <div class="w-10 h-10 rounded-full border flex items-center justify-center opacity-0 -translate-y-4 translate-x-4 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-500" :class="getBadgeColor(index, !!cert.badgeUrl)">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
+              <div class="w-10 h-10 rounded-full border flex items-center justify-center opacity-0 -translate-y-4 translate-x-4 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]" :class="getBadgeColor(index, !!cert.badgeUrl)">
+                <svg class="w-4 h-4 transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
               </div>
             </div>
             <div class="flex flex-col gap-2 mt-auto">
