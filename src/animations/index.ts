@@ -406,4 +406,5 @@ export {
   animateHeroNav,
   animateSplitText,
   animateAboutMeSectionLeave,
+  samsungErrorModal,
 };

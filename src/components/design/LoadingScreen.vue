@@ -94,6 +94,19 @@
   const isSamsungBrowser = /samsung/i.test(navigator.userAgent);
 
   onMounted(() => {
+    if (sessionStorage.getItem('portfolioLoaded')) {
+      isLoading.value = true;
+      document.body.classList.remove('stop-scrolling');
+      // Import needed animations statically or dynamically. We already have animateHeroNav?
+      // Wait, animateHeroNav and samsungErrorModal are NOT imported in this file. Let's dynamically import them.
+      import('@/animations').then(({ animateHeroNav, samsungErrorModal }) => {
+        animateHeroNav();
+        samsungErrorModal(isSamsungBrowser);
+      });
+      return;
+    }
+    sessionStorage.setItem('portfolioLoaded', 'true');
+
     index.value++;
     pathData.value = initialPath.value;
     animateLoadingTextContainer();
