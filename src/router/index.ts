@@ -22,6 +22,11 @@ const router = createRouter({
       component: () => import('../views/AdminLoginView.vue'),
       meta: { guestOnly: true },
     },
+    {
+      path: '/writeups/:id',
+      name: 'writeup-view',
+      component: () => import('../views/WriteupView.vue'),
+    },
   ],
   scrollBehavior(to, _from, _savedPosition) {
     if (to.hash) {

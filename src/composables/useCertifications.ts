@@ -20,6 +20,7 @@ export interface Certification {
   credentialUrl: string;
   badgeUrl: string;
   writeupUrl?: string;
+  writeupContent?: string;
   order?: number;
   type?: 'certificate' | 'course-certificate' | 'vd-certificate' | 'bounty' | 'hall-of-fame';
 }

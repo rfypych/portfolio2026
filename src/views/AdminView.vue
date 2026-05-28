@@ -479,9 +479,14 @@
                   <input v-model="certForm.credentialUrl" placeholder="https://..." class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs text-white/40 uppercase tracking-wider">Writeup URL</label>
+                  <label class="text-xs text-white/40 uppercase tracking-wider">External Writeup URL (Optional)</label>
                   <input v-model="certForm.writeupUrl" placeholder="https://blog.example.com/writeup" class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors">
                 </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs text-white/40 uppercase tracking-wider">Internal Writeup Content (Markdown)</label>
+                <textarea v-model="certForm.writeupContent" placeholder="# My Writeup\n\nExplain your findings or course details here using Markdown..." class="p-3 rounded-lg bg-white/10 border border-white/10 outline-none focus:border-flax-smoke-400 transition-colors min-h-[150px] font-mono text-sm"></textarea>
+                <p class="text-[10px] text-white/40">If provided, this content will be rendered internally and override the external URL.</p>
               </div>
                 <div class="flex flex-col gap-1.5">
                   <label class="text-xs text-white/40 uppercase tracking-wider">Badge Media</label>
@@ -873,6 +878,7 @@ const certForm = reactive<Omit<Certification, 'id' | 'order'>>({
   credentialUrl: '',
   badgeUrl: '',
   writeupUrl: '',
+  writeupContent: '',
   type: 'certificate',
 });
 const uploadingCertBadge = ref(false);
@@ -1015,12 +1021,13 @@ const editCert = (cert: Certification) => {
   certForm.credentialUrl = cert.credentialUrl;
   certForm.badgeUrl = cert.badgeUrl;
   certForm.writeupUrl = cert.writeupUrl || '';
+  certForm.writeupContent = cert.writeupContent || '';
   certForm.type = cert.type || 'certificate';
 };
 
 const cancelEditCert = () => {
   editingCertId.value = null;
-  Object.assign(certForm, { title: '', issuer: '', date: '', credentialUrl: '', badgeUrl: '', writeupUrl: '', type: 'certificate' });
+  Object.assign(certForm, { title: '', issuer: '', date: '', credentialUrl: '', badgeUrl: '', writeupUrl: '', writeupContent: '', type: 'certificate' });
 };
 
 const submitCertification = async () => {
@@ -1031,6 +1038,7 @@ const submitCertification = async () => {
     credentialUrl: certForm.credentialUrl || '',
     badgeUrl: certForm.badgeUrl || '',
     writeupUrl: certForm.writeupUrl || '',
+    writeupContent: certForm.writeupContent || '',
     type: certForm.type || 'certificate',
   };
 
