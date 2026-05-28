@@ -1,88 +1,133 @@
 <template>
   <section
     id="certifications-section"
-    class="common-padding relative mx-auto min-h-[60vh] overflow-y-clip pt-20 sm:pt-32 pb-20 sm:pb-32 will-change-transform"
+    class="common-padding relative mx-auto min-h-[60vh] overflow-y-clip will-change-transform"
   >
-    <!-- Header -->
-    <div
-      class="border-flax-smoke-300 grid w-full grid-cols-12 border-b-[1px] pb-[clamp(2.25rem,2.1786rem_+_0.3571vi,2.5rem)]"
-    >
+    <!-- Header — matches Works / Services pattern -->
+    <div class="flex w-full flex-col">
       <h3
         id="cert-heading"
         v-html="certHeading"
-        class="heading-1 max-sm:heading-2 text-flax-smoke-950 col-span-full leading-none font-bold uppercase will-change-auto"
+        class="heading-1 text-start leading-none font-bold uppercase"
       ></h3>
-      <div
-        class="text-flax-smoke-800 col-span-full mt-[5%] flex justify-end gap-10 sm:gap-20 lg:col-span-10"
+      <p
+        class="heading-1 text-flax-smoke-400 text-opacity-50 hidden w-4/5 text-end font-extrabold sm:block"
       >
-        <p class="heading-6 text-center text-nowrap uppercase">
-          ( Credentials )
+        ( {{ certifications.length }} )
+      </p>
+
+      <div
+        id="cert-desc"
+        class="md:column-gap text-flax-smoke-300 mt-[5%] grid grid-cols-12 justify-end opacity-0 lg:grid"
+      >
+        <p
+          class="heading-6 text-flax-smoke-300/85 col-span-4 text-center text-nowrap lg:col-start-2"
+        >
+          (
+          <span class="inline sm:hidden">{{ certifications.length }} </span>
+          CREDENTIALS )
         </p>
-        <p class="heading-6 font-fancy w-full text-balance sm:max-w-[40ch]">
-          A collection of acknowledged vulnerability reports and ongoing
-          exploration in modern web technologies and artificial intelligence.
+        <p
+          class="heading-4 font-fancy col-span-8 w-full text-balance sm:font-semibold lg:col-span-7"
+        >
+          A collection of acknowledged vulnerability reports, security
+          achievements, and ongoing exploration in modern web technologies.
         </p>
       </div>
     </div>
 
-    <!-- Creative Interactive Certifications List -->
-    <div class="mt-16 sm:mt-24 flex flex-col w-full border-t border-flax-smoke-300/30">
-      <div
-        v-for="(cert, index) in certifications"
-        :key="cert.id"
-        @click="openModal(cert)"
-        class="cert-card group relative w-full border-b border-flax-smoke-300/30 overflow-hidden cursor-pointer"
-        :style="{ opacity: 0, transform: 'translateY(60px)' }"
-        @mousemove="handleMouseMove($event, index)"
-        @mouseenter="handleMouseEnter(index)"
-        @mouseleave="handleMouseLeave(index)"
-      >
-        <!-- Hover Background Reveal -->
-        <div class="absolute inset-0 bg-flax-smoke-300 translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0"></div>
+    <!-- Credentials List -->
+    <div
+      class="relative mt-12 w-full lg:mt-[10%]"
+    >
+      <div class="border-flax-smoke-500/50 flex flex-col border-t">
+        <div
+          v-for="(cert, index) in certifications"
+          :key="cert.id"
+          @click="openModal(cert)"
+          class="cert-card group border-flax-smoke-500/50 relative w-full cursor-pointer border-b"
+          :style="{ opacity: 0, transform: 'translateY(60px)' }"
+          @mousemove="handleMouseMove($event, index)"
+          @mouseenter="handleMouseEnter(index)"
+          @mouseleave="handleMouseLeave(index)"
+        >
+          <!-- Content Row -->
+          <div class="relative z-10 flex items-center justify-between py-8 sm:py-10 md:py-14">
 
-        <!-- Content -->
-        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between p-6 sm:p-10 transition-colors duration-500 group-hover:text-[#0B0B0A]">
-          
-          <div class="flex flex-col gap-2 md:gap-4 max-w-4xl relative z-20">
-            <div class="flex items-center flex-wrap gap-3">
-              <span class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 text-xs font-bold uppercase tracking-wider transition-colors duration-500">
-                {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : cert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
-              </span>
-              <span class="font-mono text-sm md:text-base font-semibold tracking-widest opacity-60">
-                ( {{ (index + 1).toString().padStart(2, '0') }} ) — {{ cert.date }}
-              </span>
+            <!-- Left: Index Number -->
+            <div class="text-flax-smoke-400 font-title! w-16 shrink-0 text-center text-lg font-bold -tracking-wider sm:w-24 sm:text-xl md:text-2xl">
+              {{ (index + 1).toString().padStart(2, '0') }}
             </div>
-            <h4 class="font-fancy text-[clamp(2.5rem,5vw,6rem)] font-extrabold uppercase leading-[0.9] -tracking-tight text-balance">
-              {{ cert.title }}
-            </h4>
-            <p class="text-base sm:text-lg md:text-xl font-medium opacity-80 mt-2">
-              {{ cert.type === 'bounty' ? 'Target / Program:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : cert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }} <span class="font-bold">{{ cert.issuer }}</span>
-            </p>
-            <button
-              v-if="cert.writeupContent"
-              @click.stop="openWriteup(cert)"
-              class="inline-flex items-center gap-2 mt-1 text-sm font-semibold uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity duration-500 hover:underline underline-offset-4 w-fit"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-              Read Writeup
-            </button>
-            <a
-              v-else-if="cert.writeupUrl"
-              :href="cert.writeupUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              @click.stop
-              class="inline-flex items-center gap-2 mt-1 text-sm font-semibold uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity duration-500 hover:underline underline-offset-4 w-fit"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-              External Writeup
-            </a>
+
+            <!-- Center: Title & Meta -->
+            <div class="flex flex-1 flex-col gap-1.5 md:gap-2">
+              <h4 class="font-title! text-xl font-bold uppercase sm:text-2xl md:text-4xl lg:text-5xl -tracking-tight leading-[1.1] transition-colors duration-500 group-hover:text-flax-smoke-950">
+                {{ cert.title }}
+              </h4>
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                <span class="border-flax-smoke-300 text-flax-smoke-600 rounded-full border px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest select-none transition-[background-color,color] duration-500 group-hover:bg-flax-smoke-300 group-hover:text-flax-smoke-900">
+                  {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : cert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
+                </span>
+                <span class="text-flax-smoke-400 text-xs font-medium uppercase tracking-wider sm:text-sm">
+                  {{ cert.type === 'bounty' ? 'Target:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : cert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }}
+                  <span class="text-flax-smoke-700 font-semibold">{{ cert.issuer }}</span>
+                </span>
+                <span class="text-flax-smoke-400 hidden text-xs font-medium uppercase tracking-wider sm:inline">
+                  {{ cert.date }}
+                </span>
+              </div>
+              <!-- Writeup Buttons -->
+              <div class="mt-1 flex items-center gap-3">
+                <button
+                  v-if="cert.writeupContent"
+                  @click.stop="openWriteup(cert)"
+                  class="text-flax-smoke-500 hover:text-flax-smoke-800 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors"
+                >
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                  Read Writeup
+                </button>
+                <a
+                  v-else-if="cert.writeupUrl"
+                  :href="cert.writeupUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  @click.stop
+                  class="text-flax-smoke-500 hover:text-flax-smoke-800 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors"
+                >
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  External Writeup
+                </a>
+              </div>
+            </div>
+
+            <!-- Right: Badge + Arrow -->
+            <div class="flex shrink-0 items-center gap-4 sm:gap-6">
+              <!-- Mobile Badge -->
+              <div v-if="cert.badgeUrl" class="flex h-12 w-12 items-center justify-center xl:hidden">
+                <video
+                  v-if="isVideo(cert.badgeUrl)"
+                  :src="cert.badgeUrl"
+                  autoplay muted loop playsinline
+                  class="h-full w-full object-contain"
+                ></video>
+                <img
+                  v-else
+                  :src="cert.badgeUrl"
+                  class="h-full w-full object-contain"
+                />
+              </div>
+
+              <!-- Arrow -->
+              <div class="border-flax-smoke-300 group-hover:bg-flax-smoke-300 group-hover:text-flax-smoke-900 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border transition-[background-color,color] duration-500 sm:h-14 sm:w-14 md:h-16 md:w-16">
+                <svg class="h-4 w-4 transition-transform duration-500 group-hover:rotate-45 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
+              </div>
+            </div>
           </div>
 
-          <!-- Floating Badge (Desktop) -->
+          <!-- Desktop Floating Badge -->
           <div
             v-if="cert.badgeUrl"
-            class="absolute top-0 left-0 pointer-events-none hidden xl:flex z-30"
+            class="pointer-events-none absolute top-0 left-0 z-30 hidden xl:flex"
             :style="{
               transform: `translate3d(calc(${mouseState[index]?.x || 0}px - 50%), calc(${mouseState[index]?.y || 0}px - 50%), 0) ${mouseState[index]?.active ? 'scale(1) rotate(0deg)' : 'scale(0.5) rotate(15deg)'}`,
               opacity: mouseState[index]?.active ? 1 : 0,
@@ -92,49 +137,16 @@
             <video
               v-if="isVideo(cert.badgeUrl)"
               :src="cert.badgeUrl"
-              autoplay
-              muted
-              loop
-              playsinline
-              class="w-48 h-48 lg:w-56 lg:h-56 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+              autoplay muted loop playsinline
+              class="h-48 w-48 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:h-56 lg:w-56"
             ></video>
             <img
               v-else
               :src="cert.badgeUrl"
               :alt="cert.title"
-              class="w-48 h-48 lg:w-56 lg:h-56 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+              class="h-48 w-48 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:h-56 lg:w-56"
             />
           </div>
-
-          <!-- Arrow & Mobile Badge -->
-          <div class="mt-8 lg:mt-0 flex items-center gap-6 self-start lg:self-auto relative z-20">
-            <div v-if="cert.badgeUrl" class="w-16 h-16 xl:hidden flex items-center justify-center drop-shadow-xl">
-              <video
-                v-if="isVideo(cert.badgeUrl)"
-                :src="cert.badgeUrl"
-                autoplay
-                muted
-                loop
-                playsinline
-                class="w-full h-full object-contain"
-              ></video>
-              <img
-                v-else
-                :src="cert.badgeUrl"
-                class="w-full h-full object-contain"
-              />
-            </div>
-            
-            <div class="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full border border-current group-hover:bg-[#0B0B0A] group-hover:text-flax-smoke-300 transition-colors duration-500 overflow-hidden relative">
-              <div class="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-x-full group-hover:-translate-y-full">
-                <svg class="w-5 h-5 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
-              </div>
-              <div class="absolute inset-0 flex items-center justify-center -translate-x-full translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-x-0 group-hover:translate-y-0">
-                <svg class="w-5 h-5 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
@@ -162,37 +174,34 @@
     <!-- Image Modal -->
     <Teleport to="body">
       <transition name="fade">
-        <div 
-          v-if="selectedCert" 
-          class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4 sm:p-10 backdrop-blur-md" 
-          @click="closeModal" 
+        <div
+          v-if="selectedCert"
+          class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4 sm:p-10 backdrop-blur-md"
+          @click="closeModal"
           data-lenis-prevent
         >
-          <div class="relative w-full max-w-6xl max-h-full flex flex-col items-center justify-center gap-6" @click.stop>
-            <button @click="closeModal" class="absolute -top-12 md:-top-16 right-0 text-white/50 hover:text-white transition-colors">
-              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" /></svg>
+          <div class="relative flex max-h-full w-full max-w-6xl flex-col items-center justify-center gap-6" @click.stop>
+            <button @click="closeModal" class="absolute -top-12 right-0 text-white/50 hover:text-white transition-colors md:-top-16">
+              <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <video
               v-if="selectedCert.badgeUrl && isVideo(selectedCert.badgeUrl)"
               :src="selectedCert.badgeUrl"
-              autoplay
-              muted
-              loop
-              playsinline
-              class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none"
+              autoplay muted loop playsinline
+              class="h-auto max-h-[70vh] w-full select-none object-contain drop-shadow-2xl"
             ></video>
             <img
               v-else
               :src="selectedCert.badgeUrl"
-              class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none"
+              class="h-auto max-h-[70vh] w-full select-none object-contain drop-shadow-2xl"
             />
-            <div class="flex flex-col items-center gap-4 text-white text-center">
-              <h4 class="font-fancy text-2xl md:text-4xl font-extrabold uppercase">{{ selectedCert.title }}</h4>
-              <a 
-                v-if="selectedCert.credentialUrl" 
-                :href="selectedCert.credentialUrl" 
-                target="_blank" 
-                class="px-8 py-3 bg-flax-smoke-300 text-black font-semibold rounded-full hover:bg-flax-smoke-200 transition-colors text-sm uppercase tracking-widest mt-2"
+            <div class="flex flex-col items-center gap-4 text-center text-white">
+              <h4 class="font-fancy text-2xl font-extrabold uppercase md:text-4xl">{{ selectedCert.title }}</h4>
+              <a
+                v-if="selectedCert.credentialUrl"
+                :href="selectedCert.credentialUrl"
+                target="_blank"
+                class="border-flax-smoke-300 bg-flax-smoke-300 mt-2 rounded-full border px-8 py-3 text-sm font-semibold uppercase tracking-widest text-black transition-colors hover:bg-flax-smoke-200"
               >
                 Verify Credential
               </a>
@@ -207,41 +216,39 @@
       <transition name="writeup-slide">
         <div
           v-if="writeupCert"
-          class="fixed inset-0 z-[10000] bg-[#0B0B0A] overflow-y-auto"
+          class="fixed inset-0 z-[10000] overflow-y-auto bg-[#0B0B0A]"
           data-lenis-prevent
         >
           <!-- Writeup Navbar -->
-          <nav class="sticky top-0 left-0 w-full p-4 sm:p-6 z-50 flex justify-between items-center bg-[#0B0B0A]/80 backdrop-blur-md border-b border-white/10">
-            <button @click="closeWriteup" class="flex items-center gap-2 group hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-xs sm:text-sm">
-              <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          <nav class="sticky top-0 left-0 z-50 flex w-full items-center justify-between border-b border-white/10 bg-[#0B0B0A]/80 p-4 backdrop-blur-md sm:p-6">
+            <button @click="closeWriteup" class="group flex items-center gap-2 font-mono text-xs uppercase tracking-widest transition-colors hover:text-flax-smoke-300 sm:text-sm">
+              <svg class="h-5 w-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
               Close
             </button>
-            <span class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] text-[10px] font-bold uppercase tracking-wider">
+            <span class="rounded-full border border-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white/60">
               {{ writeupCert.type === 'bounty' ? 'Bug Bounty' : writeupCert.type === 'hall-of-fame' ? 'Hall of Fame' : writeupCert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
             </span>
           </nav>
 
           <!-- Writeup Content -->
-          <main class="px-6 sm:px-10 pt-10 pb-20 max-w-4xl mx-auto text-flax-smoke-50">
-            <!-- Header -->
+          <main class="mx-auto max-w-4xl px-6 pt-10 pb-20 text-flax-smoke-50 sm:px-10">
             <header class="mb-12 sm:mb-16">
-              <h1 class="font-fancy text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase leading-[1.1] -tracking-tight text-balance mb-6">
+              <h1 class="font-title! mb-6 text-4xl font-extrabold uppercase leading-[1.1] -tracking-tight text-balance sm:text-5xl md:text-6xl">
                 {{ writeupCert.title }}
               </h1>
-              <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 font-mono text-sm opacity-70">
+              <div class="flex flex-col gap-4 font-mono text-sm opacity-70 sm:flex-row sm:items-center sm:gap-8">
                 <p>
                   <span class="opacity-60">{{ writeupCert.type === 'bounty' ? 'Target:' : writeupCert.type === 'hall-of-fame' ? 'Recognized By:' : writeupCert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }}</span>
-                  <span class="font-bold text-flax-smoke-300 ml-2">{{ writeupCert.issuer }}</span>
+                  <span class="ml-2 font-bold text-flax-smoke-300">{{ writeupCert.issuer }}</span>
                 </p>
-                <p class="hidden sm:block opacity-30">•</p>
+                <p class="hidden opacity-30 sm:block">•</p>
                 <p>
                   <span class="opacity-60">Date:</span>
-                  <span class="font-bold ml-2">{{ writeupCert.date }}</span>
+                  <span class="ml-2 font-bold">{{ writeupCert.date }}</span>
                 </p>
               </div>
             </header>
 
-            <!-- Markdown Body -->
             <article
               class="writeup-prose"
               v-html="writeupHtml"
@@ -310,7 +317,7 @@
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    
+
     if (!mouseState.value[index]) {
       mouseState.value[index] = { x, y, active: true };
     } else {
@@ -346,7 +353,7 @@
     // Animate heading text
     animateSplitText(
       '#cert-heading .letters',
-      '#cert-heading',
+      '#cert-desc',
       1,
       0.01,
       0,
