@@ -35,7 +35,7 @@
             :data-cal-config="dataCalConfig"
             label="Get in touch"
           /> -->
-          <Button label="Get in touch" url="https://wa.me/967775367671" />
+          <Button label="Get in touch" url="mailto:rofikulhuda244@gmail.com" />
         </div>
       </div>
       <div
