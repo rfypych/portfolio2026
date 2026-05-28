@@ -58,19 +58,20 @@
             <p class="text-base sm:text-lg md:text-xl font-medium opacity-80 mt-2">
               {{ cert.type === 'bounty' ? 'Target / Program:' : cert.type === 'hall-of-fame' ? 'Recognized By:' : cert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }} <span class="font-bold">{{ cert.issuer }}</span>
             </p>
-            <router-link
+            <button
               v-if="cert.writeupContent"
-              :to="'/writeups/' + cert.id"
+              @click.stop="openWriteup(cert)"
               class="inline-flex items-center gap-2 mt-1 text-sm font-semibold uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity duration-500 hover:underline underline-offset-4 w-fit"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
               Read Writeup
-            </router-link>
+            </button>
             <a
               v-else-if="cert.writeupUrl"
               :href="cert.writeupUrl"
               target="_blank"
               rel="noopener noreferrer"
+              @click.stop
               class="inline-flex items-center gap-2 mt-1 text-sm font-semibold uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity duration-500 hover:underline underline-offset-4 w-fit"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -200,6 +201,55 @@
         </div>
       </transition>
     </Teleport>
+
+    <!-- Writeup Overlay -->
+    <Teleport to="body">
+      <transition name="writeup-slide">
+        <div
+          v-if="writeupCert"
+          class="fixed inset-0 z-[100] bg-[#0B0B0A] overflow-y-auto"
+          data-lenis-prevent
+        >
+          <!-- Writeup Navbar -->
+          <nav class="sticky top-0 left-0 w-full p-4 sm:p-6 z-50 flex justify-between items-center bg-[#0B0B0A]/80 backdrop-blur-md border-b border-white/10">
+            <button @click="closeWriteup" class="flex items-center gap-2 group hover:text-flax-smoke-300 transition-colors font-mono uppercase tracking-widest text-xs sm:text-sm">
+              <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              Close
+            </button>
+            <span class="px-2 py-1 rounded bg-flax-smoke-300 text-[#0B0B0A] text-[10px] font-bold uppercase tracking-wider">
+              {{ writeupCert.type === 'bounty' ? 'Bug Bounty' : writeupCert.type === 'hall-of-fame' ? 'Hall of Fame' : writeupCert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
+            </span>
+          </nav>
+
+          <!-- Writeup Content -->
+          <main class="px-6 sm:px-10 pt-10 pb-20 max-w-4xl mx-auto text-flax-smoke-50">
+            <!-- Header -->
+            <header class="mb-12 sm:mb-16">
+              <h1 class="font-fancy text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase leading-[1.1] -tracking-tight text-balance mb-6">
+                {{ writeupCert.title }}
+              </h1>
+              <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 font-mono text-sm opacity-70">
+                <p>
+                  <span class="opacity-60">{{ writeupCert.type === 'bounty' ? 'Target:' : writeupCert.type === 'hall-of-fame' ? 'Recognized By:' : writeupCert.type === 'vd-certificate' ? 'Reported To:' : 'Issuer:' }}</span>
+                  <span class="font-bold text-flax-smoke-300 ml-2">{{ writeupCert.issuer }}</span>
+                </p>
+                <p class="hidden sm:block opacity-30">•</p>
+                <p>
+                  <span class="opacity-60">Date:</span>
+                  <span class="font-bold ml-2">{{ writeupCert.date }}</span>
+                </p>
+              </div>
+            </header>
+
+            <!-- Markdown Body -->
+            <article
+              class="writeup-prose"
+              v-html="writeupHtml"
+            ></article>
+          </main>
+        </div>
+      </transition>
+    </Teleport>
   </section>
 </template>
 
@@ -210,6 +260,8 @@
   import { textSplitterIntoChar, isVideo } from '@/functions';
   import { animateSplitText } from '@/animations';
   import { useCertifications, type Certification } from '@/composables/useCertifications';
+  import { marked } from 'marked';
+  import DOMPurify from 'dompurify';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -217,20 +269,38 @@
 
   const certHeading = ref('Credentials /');
 
-  // Modal State
+  // Image Modal State
   const selectedCert = ref<Certification | null>(null);
 
   const openModal = (cert: Certification) => {
     if (cert.badgeUrl) {
       selectedCert.value = cert;
     } else if (cert.credentialUrl) {
-      // If no badge image exists, fallback to opening link
       window.open(cert.credentialUrl, '_blank');
     }
   };
 
   const closeModal = () => {
     selectedCert.value = null;
+  };
+
+  // Writeup Overlay State
+  const writeupCert = ref<Certification | null>(null);
+  const writeupHtml = ref('');
+
+  const openWriteup = async (cert: Certification) => {
+    writeupCert.value = cert;
+    if (cert.writeupContent) {
+      const rawHtml = await marked(cert.writeupContent);
+      writeupHtml.value = DOMPurify.sanitize(rawHtml);
+    }
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeWriteup = () => {
+    writeupCert.value = null;
+    writeupHtml.value = '';
+    document.body.style.overflow = '';
   };
 
   // Mouse tracking state for floating badges
@@ -314,5 +384,156 @@
 .fade-leave-to {
   opacity: 0;
   backdrop-filter: blur(0px);
+}
+
+.writeup-slide-enter-active {
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.4s ease;
+}
+.writeup-slide-leave-active {
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s ease;
+}
+.writeup-slide-enter-from {
+  transform: translateY(100%);
+  opacity: 0;
+}
+.writeup-slide-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+</style>
+
+<style>
+/* Writeup Prose — Flax Smoke Theme */
+.writeup-prose {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+.writeup-prose h1,
+.writeup-prose h2,
+.writeup-prose h3,
+.writeup-prose h4 {
+  font-family: var(--font-title, 'title'), sans-serif;
+  color: #f4f4f1;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.1;
+}
+
+.writeup-prose h1 { font-size: 2.5rem; }
+.writeup-prose h2 { font-size: 1.75rem; }
+.writeup-prose h3 { font-size: 1.375rem; }
+.writeup-prose h4 { font-size: 1.125rem; }
+
+.writeup-prose p {
+  margin-bottom: 1.5em;
+}
+
+.writeup-prose a {
+  color: #b9b596;
+  text-decoration: underline;
+  text-decoration-color: rgba(185, 181, 150, 0.4);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.writeup-prose a:hover {
+  text-decoration-color: #b9b596;
+}
+
+.writeup-prose strong {
+  color: #f4f4f1;
+  font-weight: 700;
+}
+
+.writeup-prose em {
+  font-style: italic;
+}
+
+.writeup-prose blockquote {
+  border-left: 3px solid #b9b596;
+  padding-left: 1.25em;
+  margin: 1.5em 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.writeup-prose code {
+  color: #b9b596;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.15em 0.4em;
+  border-radius: 0.375rem;
+  font-size: 0.9em;
+  font-family: 'Courier New', monospace;
+}
+
+.writeup-prose pre {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.writeup-prose pre code {
+  background: none;
+  padding: 0;
+  color: #f4f4f1;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.writeup-prose ul,
+.writeup-prose ol {
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.writeup-prose ul { list-style-type: disc; }
+.writeup-prose ol { list-style-type: decimal; }
+
+.writeup-prose li {
+  margin-bottom: 0.5em;
+}
+
+.writeup-prose li::marker {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.writeup-prose hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2.5em 0;
+}
+
+.writeup-prose img {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 100%;
+  margin: 1.5em 0;
+}
+
+.writeup-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.writeup-prose th,
+.writeup-prose td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75em 1em;
+  text-align: left;
+}
+
+.writeup-prose th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f4f4f1;
+  font-weight: 700;
 }
 </style>
