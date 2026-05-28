@@ -27,6 +27,11 @@ const router = createRouter({
       name: 'writeup-view',
       component: () => import('../views/WriteupView.vue'),
     },
+    {
+      path: '/credentials',
+      name: 'credentials-view',
+      component: () => import('../views/CredentialsView.vue'),
+    },
   ],
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) {

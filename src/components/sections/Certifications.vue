@@ -29,7 +29,7 @@
     <div class="mt-16 sm:mt-24 w-full">
       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[300px]">
         <div
-          v-for="(cert, index) in certifications.slice(0, visibleCount)"
+          v-for="(cert, index) in certifications.slice(0, 4)"
           :key="cert.id"
           @click="handleBentoClick(cert)"
           class="cert-card group relative cursor-pointer overflow-hidden rounded-3xl transition-transform duration-500 hover:scale-[1.02]"
@@ -74,16 +74,16 @@
       </div>
 
       <!-- Explore All Credentials Button -->
-      <div v-if="visibleCount < certifications.length" class="mt-12 flex justify-center w-full relative z-50">
-        <button
-          @click="loadMore"
+      <div v-if="certifications.length > 4" class="mt-12 flex justify-center w-full relative z-50">
+        <router-link
+          to="/credentials"
           class="group border-flax-smoke-300 text-flax-smoke-800 hover:bg-flax-smoke-300 hover:text-flax-smoke-950 flex items-center justify-center gap-4 rounded-full border px-10 py-4 font-bold uppercase tracking-widest transition-all duration-500"
         >
-          Load More
-          <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 px-3 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
-            {{ certifications.length - visibleCount }} Left
+          Explore All Credentials
+          <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 w-6 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
+            {{ certifications.length }}
           </span>
-        </button>
+        </router-link>
       </div>
     </div>
 
@@ -216,24 +216,6 @@
   const { certifications, loading, fetchCertifications } = useCertifications();
 
   const certHeading = ref('Credentials /');
-
-  // Bento Grid Expand Logic
-  const visibleCount = ref(7); // Initial items to show (7 forms a nice asymmetric block in a 4-col grid)
-
-  const loadMore = () => {
-    visibleCount.value = Math.min(visibleCount.value + 6, certifications.value.length);
-    nextTick(() => {
-      // Re-trigger reveal animation for newly added cards
-      gsap.to('.cert-card', {
-        opacity: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: 'power4.inOut',
-      });
-      ScrollTrigger.refresh();
-    });
-  };
 
   // Bento Grid Layout Logic
   const getBentoClasses = (index: number) => {
