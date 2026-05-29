@@ -2,6 +2,7 @@
   <section
     id="marquee-section"
     class="text-flax-smoke-200 relative mb-50 h-fit w-full overflow-clip leading-none will-change-auto"
+    style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);"
   >
     <div
       id="marquee-1"

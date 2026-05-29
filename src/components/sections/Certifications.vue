@@ -26,7 +26,7 @@
     </div>
 
     <!-- Credential Marquee -->
-    <div class="mt-16 sm:mt-24 w-full overflow-hidden relative">
+    <div class="mt-16 sm:mt-24 w-full overflow-hidden relative" style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
       <div
         id="cert-marquee"
         class="flex gap-6 whitespace-nowrap will-change-transform"
