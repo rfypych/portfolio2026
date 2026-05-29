@@ -78,25 +78,26 @@
           </div>
 
           <!-- Template B -->
-          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950 relative overflow-hidden">
-            <div class="relative z-10">
+          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950">
+            <div>
               <div class="flex items-center gap-2 mb-4 sm:mb-6">
-                <span class="border border-flax-smoke-950 px-2 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">OXRPHY®</span>
-                <span class="font-bold text-[9px] sm:text-[10px] uppercase tracking-widest opacity-60">CERTIFICATION</span>
+                <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">OXRPHY®</span>
+                <span class="font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">CERTIFICATION</span>
               </div>
-              <h4 class="font-fancy font-black text-xl sm:text-3xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
+              <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
                 {{ cert.title }}
               </h4>
             </div>
-            <div class="flex-grow flex items-center justify-center relative z-0 my-2">
-              <img :src="statueImages[2]" class="w-28 h-36 sm:w-40 sm:h-48 object-contain mx-auto mix-blend-multiply opacity-90" alt="" />
-            </div>
-            <div class="relative z-10 border-t border-flax-smoke-950 pt-3 sm:pt-4 bg-flax-smoke-50/80 backdrop-blur-sm">
-              <p class="font-mono text-[8px] sm:text-[9px] uppercase leading-relaxed whitespace-normal mb-2">
-                <span class="opacity-60">AWARDED TO ROFIKUL HUDA BY</span><br/>
-                <span class="font-bold">{{ cert.issuer }}</span>
+            <div class="flex-grow flex flex-col justify-center my-4">
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-2 sm:mb-4">
+                This certifies that<br/>
+                <span class="font-bold text-sm sm:text-base">[ROFIKUL HUDA]</span><br/>
+                has successfully completed or been acknowledged by {{ cert.issuer }}.
               </p>
-              <span class="font-bold text-lg sm:text-2xl uppercase tracking-wider">{{ cert.date }}</span>
+              <img :src="statueImages[2]" class="w-16 h-20 sm:w-24 sm:h-28 object-contain mx-auto mix-blend-multiply" alt="" />
+            </div>
+            <div>
+              <span class="font-bold text-xl sm:text-3xl uppercase tracking-wider">{{ cert.date }}</span>
             </div>
           </div>
 
@@ -133,23 +134,51 @@
           </div>
 
           <!-- Template D -->
-          <div v-else class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative z-10 overflow-hidden">
-            <img :src="statueImages[0]" class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.12] object-contain mix-blend-multiply pointer-events-none" alt="" />
+          <div v-else-if="getTemplate(cert, index) === 'D'" class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative z-10 overflow-hidden">
+            <img :src="statueImages[0]" class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.15] object-contain mix-blend-multiply pointer-events-none" alt="" />
             <div class="flex justify-between items-start border-b-[1.5px] border-flax-smoke-950 pb-3 sm:pb-4 mb-4">
               <span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-widest">ID-{{ String(index).padStart(4, '0') }}</span>
               <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest">VERIFIED</span>
             </div>
-            <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.85] tracking-tighter text-balance mb-auto mt-2 relative z-10">
+            <h4 class="font-fancy font-black text-3xl sm:text-5xl uppercase leading-[0.85] tracking-tighter text-balance mb-auto mt-2">
               {{ cert.title }}
             </h4>
-            <div class="mt-auto grid grid-cols-2 gap-4 border-t-[1.5px] border-flax-smoke-950 pt-3 sm:pt-4 relative z-10 bg-flax-smoke-50/50 backdrop-blur-sm">
+            <div class="mt-auto grid grid-cols-2 gap-4 border-t-[1.5px] border-flax-smoke-950 pt-3 sm:pt-4 relative z-10">
               <div>
                 <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 block mb-1">ISSUED BY</span>
-                <span class="font-bold text-[9px] sm:text-xs uppercase leading-tight">{{ cert.issuer }}</span>
+                <span class="font-bold text-[10px] sm:text-xs uppercase leading-tight">{{ cert.issuer }}</span>
               </div>
               <div class="text-right">
                 <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 block mb-1">ACHIEVED ON</span>
                 <span class="font-bold text-[11px] sm:text-[13px] uppercase tracking-wider">{{ cert.date }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Template E -->
+          <div v-else class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950 relative overflow-hidden">
+            <div class="flex justify-between items-center z-10">
+              <h3 class="font-fancy font-black text-2xl sm:text-3xl uppercase tracking-tighter leading-none">ROFIKUL*</h3>
+              <div class="w-2 h-2 rounded-full bg-flax-smoke-950"></div>
+            </div>
+            <div class="relative my-4 sm:my-6 flex-grow flex flex-col justify-center z-10">
+              <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.9] tracking-tighter text-balance relative z-10">
+                {{ cert.title }}
+              </h4>
+              <img :src="statueImages[1]" class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-20 mix-blend-multiply pointer-events-none" alt="" />
+            </div>
+            <div class="flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase z-10">
+              <div class="flex justify-between border-b border-flax-smoke-300 pb-1.5 sm:pb-2">
+                <span class="opacity-60">RECIPIENT:</span>
+                <span class="font-bold">ROFIKUL HUDA</span>
+              </div>
+              <div class="flex justify-between border-b border-flax-smoke-300 pb-1.5 sm:pb-2">
+                <span class="opacity-60">AUTHORITY:</span>
+                <span class="font-bold">{{ cert.issuer }}</span>
+              </div>
+              <div class="flex justify-between pt-1">
+                <span class="opacity-60">DATE:</span>
+                <span class="font-bold tracking-widest text-[9px] sm:text-[10px]">{{ cert.date }}</span>
               </div>
             </div>
           </div>
@@ -306,17 +335,17 @@
   ];
 
   // Deterministic template assignment based on cert id hash
-  const getTemplate = (cert: Certification, index: number): 'A' | 'B' | 'C' | 'D' => {
-    const templates: ('A' | 'B' | 'C' | 'D')[] = ['A', 'B', 'C', 'D'];
+  const getTemplate = (cert: Certification, index: number): 'A' | 'B' | 'C' | 'D' | 'E' => {
+    const templates: ('A' | 'B' | 'C' | 'D' | 'E')[] = ['A', 'B', 'C', 'D', 'E'];
     if (cert.id) {
       let hash = 0;
       for (let i = 0; i < cert.id.length; i++) {
         hash = ((hash << 5) - hash) + cert.id.charCodeAt(i);
         hash |= 0;
       }
-      return templates[Math.abs(hash) % 4];
+      return templates[Math.abs(hash) % 5];
     }
-    return templates[index % 4];
+    return templates[index % 5];
   };
 
   // For marquee: duplicate items to create seamless loop
