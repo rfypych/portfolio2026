@@ -35,7 +35,7 @@
           v-for="(cert, index) in marqueeItems"
           :key="`cert-${index}`"
           @click="openModal(cert)"
-          class="cert-poster flex-shrink-0 w-[320px] sm:w-[380px] h-[460px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
+          class="cert-poster flex-shrink-0 w-[320px] sm:w-[380px] h-[460px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none"
         >
           <!-- Template A -->
           <div v-if="getTemplate(cert, index) === 'A'" class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950">
@@ -128,18 +128,7 @@
       </div>
     </div>
 
-    <!-- Explore All Credentials Button -->
-    <div v-if="certifications.length > 0" class="mt-12 flex justify-center w-full relative z-50">
-      <router-link
-        to="/credentials"
-        class="group border-flax-smoke-300 text-flax-smoke-800 hover:bg-flax-smoke-300 hover:text-flax-smoke-950 flex items-center justify-center gap-4 rounded-full border px-10 py-4 font-bold uppercase tracking-widest transition-all duration-500"
-      >
-        Explore All Credentials
-        <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 w-6 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
-          {{ certifications.length }}
-        </span>
-      </router-link>
-    </div>
+
 
     <!-- Loading State -->
     <div

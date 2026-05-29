@@ -31,7 +31,7 @@
           v-for="(cert, index) in certifications"
           :key="cert.id"
           @click="openModal(cert)"
-          class="cred-card cursor-pointer border border-flax-smoke-950 bg-flax-smoke-50 h-[500px] sm:h-[520px] relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]"
+          class="cred-card cursor-pointer border border-flax-smoke-950 bg-flax-smoke-50 h-[500px] sm:h-[520px] relative overflow-hidden"
           :style="{ opacity: 0, transform: 'translateY(80px)' }"
         >
           <!-- Template A -->
