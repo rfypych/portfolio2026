@@ -31,37 +31,63 @@
           v-for="(cert, index) in certifications"
           :key="cert.id"
           @click="handleBentoClick(cert)"
-          class="cred-card group relative cursor-pointer overflow-hidden rounded-3xl transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]"
+          class="cred-card group relative cursor-pointer overflow-hidden border border-flax-smoke-950 bg-flax-smoke-50 transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]"
           :class="getBentoClasses(index)"
           :style="{ opacity: 0, transform: 'translateY(100px)' }"
         >
-          <!-- Background -->
-          <div v-if="cert.badgeUrl" class="absolute inset-0 bg-[#0B0B0A]">
-            <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"></video>
-            <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110" />
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0A] via-[#0B0B0A]/40 to-transparent transition-opacity duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-80"></div>
-          </div>
-          <div v-else class="absolute inset-0 transition-colors duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]" :class="getBgColor(index)"></div>
-
-          <!-- Content Wrapper -->
-          <div class="relative h-full flex flex-col justify-between p-6 sm:p-8 z-10" :class="getTextColor(index, !!cert.badgeUrl)">
-            <div class="flex justify-between items-start w-full">
-              <span class="inline-block border px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-md" :class="getBadgeColor(index, !!cert.badgeUrl)">
-                {{ cert.type === 'bounty' ? 'Bug Bounty' : cert.type === 'hall-of-fame' ? 'Hall of Fame' : cert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
-              </span>
-              <div class="w-10 h-10 rounded-full border flex items-center justify-center opacity-0 -translate-y-4 translate-x-4 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]" :class="getBadgeColor(index, !!cert.badgeUrl)">
-                <svg class="w-4 h-4 transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
-              </div>
+          <!-- Background Hover Image/Video (Hidden by default) -->
+          <div v-if="cert.badgeUrl" class="absolute inset-0 bg-[#0B0B0A] opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-20 pointer-events-none">
+            <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"></video>
+            <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]" />
+            <!-- Gradient Overlay for visual polish -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0A] via-[#0B0B0A]/20 to-transparent"></div>
+            
+            <!-- Hover State Arrow -->
+            <div class="absolute bottom-6 right-6 z-30">
+                <div class="w-12 h-12 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm flex items-center justify-center text-white opacity-0 -translate-y-4 translate-x-4 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
+                    <svg class="w-5 h-5 transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
+                </div>
             </div>
-            <div class="flex flex-col gap-2 mt-auto">
-              <div class="flex items-center gap-3 font-mono text-xs uppercase tracking-widest opacity-80">
-                <span>{{ cert.date }}</span>
-                <span>•</span>
-                <span class="truncate max-w-[200px]">{{ cert.issuer }}</span>
-              </div>
-              <h4 class="font-title! font-bold uppercase leading-[1.05] line-clamp-3" :class="getTitleSize(index)">
+          </div>
+
+          <!-- Typographic Poster Content (Default State) -->
+          <div class="relative h-full flex flex-col justify-between p-6 sm:p-8 z-10 text-flax-smoke-950 transition-opacity duration-[600ms] group-hover:opacity-0">
+            <!-- Top Header -->
+            <div class="flex justify-between items-start w-full border-b border-flax-smoke-950 pb-4">
+              <h3 class="font-bold uppercase tracking-widest text-xs sm:text-sm bg-flax-smoke-950 text-flax-smoke-50 px-3 py-1">
+                {{ cert.type === 'bounty' ? 'BUG BOUNTY*' : cert.type === 'hall-of-fame' ? 'HALL OF FAME*' : cert.type === 'vd-certificate' ? 'VD CERTIFICATE*' : 'COURSE CERTIFICATE*' }}
+              </h3>
+              <span class="font-mono text-[10px] uppercase tracking-widest opacity-60 flex flex-col items-end">
+                <span>SERIAL NO.</span>
+                <span class="font-bold">{{ String(index + 1).padStart(3, '0') }}-{{ new Date().getFullYear() }}</span>
+              </span>
+            </div>
+
+            <!-- Center Massive Title -->
+            <div class="flex-grow flex flex-col justify-center my-8">
+              <h4 class="font-fancy font-black uppercase leading-[0.9] tracking-tighter" :class="getTitleSize(index)" style="text-wrap: balance;">
                 {{ cert.title }}
               </h4>
+              <p class="font-mono text-[10px] sm:text-xs uppercase mt-6 max-w-[90%] opacity-80 leading-relaxed border-l-2 border-flax-smoke-950 pl-4">
+                THIS CREDENTIAL CERTIFIES THAT <span class="font-bold">ROFIKUL HUDA</span> HAS SUCCESSFULLY COMPLETED OR BEEN ACKNOWLEDGED BY <span class="font-bold">{{ cert.issuer }}</span> FOR SIGNIFICANT CONTRIBUTIONS.
+              </p>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="flex justify-between items-end border-t border-flax-smoke-950 pt-4 w-full">
+              <div class="flex flex-col">
+                <span class="font-mono text-[10px] uppercase opacity-60">DATE:</span>
+                <span class="font-bold uppercase tracking-wider text-xl sm:text-2xl">{{ cert.date }}</span>
+              </div>
+              
+              <!-- Signature Line & SVG -->
+              <div class="flex flex-col items-center">
+                <!-- Fake Signature SVG -->
+                <svg class="w-16 h-8 sm:w-20 sm:h-10 opacity-80 mb-1" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-[9px] uppercase tracking-widest border-t border-flax-smoke-950 pt-1 w-full text-center">SIGNATURE</span>
+              </div>
             </div>
           </div>
         </div>
@@ -141,24 +167,7 @@ const getTitleSize = (index: number) => {
   return 'text-2xl md:text-3xl';
 };
 
-const getBgColor = (index: number) => {
-  const colors = ['bg-[#111110]', 'bg-flax-smoke-300', 'bg-[#f4f4f1]'];
-  return colors[index % colors.length];
-};
 
-const getTextColor = (index: number, hasImage: boolean) => {
-  if (hasImage) return 'text-[#f4f4f1]';
-  const bg = getBgColor(index);
-  if (bg === 'bg-[#111110]') return 'text-[#f4f4f1]';
-  return 'text-[#111110]';
-};
-
-const getBadgeColor = (index: number, hasImage: boolean) => {
-  if (hasImage) return 'border-white/30 text-white bg-black/20';
-  const bg = getBgColor(index);
-  if (bg === 'bg-[#111110]') return 'border-white/20 text-[#f4f4f1] bg-white/5';
-  return 'border-black/20 text-[#111110] bg-black/5';
-};
 
 const handleBentoClick = (cert: Certification) => {
   if (cert.writeupContent || cert.writeupUrl) {
