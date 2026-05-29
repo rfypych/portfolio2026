@@ -44,13 +44,13 @@
           v-for="(cert, index) in marqueeItems"
           :key="`cert-${index}`"
           @click="handleCardClick(cert)"
-          class="cert-poster flex-shrink-0 w-[320px] sm:w-[380px] h-[460px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none"
+          class="cert-poster flex-shrink-0 w-[280px] sm:w-[380px] h-[400px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none"
         >
           <!-- Template A -->
-          <div v-if="getTemplate(cert, index) === 'A'" class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950">
+          <div v-if="getTemplate(cert, index) === 'A'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950">
             <div>
               <h3 class="font-fancy font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-[0.9]">ROFIKUL*</h3>
-              <img :src="statueImages[0]" class="absolute top-6 right-6 w-20 h-20 sm:w-24 sm:h-24 object-cover mix-blend-multiply" alt="" />
+              <img :src="statueImages[0]" class="absolute top-5 right-5 w-16 h-16 sm:w-24 sm:h-24 object-cover mix-blend-multiply" alt="" />
             </div>
             <div class="flex-grow flex flex-col justify-center my-4">
               <h4 class="font-fancy font-black text-2xl sm:text-3xl uppercase leading-[0.9] tracking-tighter whitespace-normal" style="text-wrap: balance;">
@@ -58,7 +58,7 @@
               </h4>
             </div>
             <div>
-              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed mb-6 whitespace-normal">
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed mb-4 sm:mb-6 whitespace-normal">
                 PRESENTED TO <span class="font-bold">ROFIKUL HUDA</span><br/>
                 FOR {{ cert.issuer }} RESEARCH
               </p>
@@ -68,7 +68,7 @@
                   <span class="font-bold text-lg sm:text-xl uppercase tracking-wide">{{ cert.date }}</span>
                 </div>
                 <div class="flex flex-col items-center">
-                  <svg class="w-14 h-6 sm:w-16 sm:h-7 opacity-80 mb-0.5" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <svg class="w-12 h-5 sm:w-16 sm:h-7 opacity-80 mb-0.5" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                   <span class="font-mono text-[8px] uppercase tracking-widest border-t border-flax-smoke-950 pt-0.5 text-center">SIGNATURE</span>
@@ -78,42 +78,42 @@
           </div>
 
           <!-- Template B -->
-          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950">
+          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950">
             <div>
-              <div class="flex items-center gap-2 mb-6">
-                <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest">OXRPHY®</span>
-                <span class="font-bold text-[10px] sm:text-xs uppercase tracking-widest">CERTIFICATION</span>
+              <div class="flex items-center gap-2 mb-4 sm:mb-6">
+                <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">OXRPHY®</span>
+                <span class="font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">CERTIFICATION</span>
               </div>
-              <h4 class="font-fancy font-black text-3xl sm:text-4xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
+              <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
                 {{ cert.title }}
               </h4>
             </div>
             <div class="flex-grow flex flex-col justify-center my-4">
-              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-4">
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-2 sm:mb-4">
                 This certifies that<br/>
                 <span class="font-bold text-sm sm:text-base">[ROFIKUL HUDA]</span><br/>
                 has successfully completed or been acknowledged by {{ cert.issuer }}.
               </p>
-              <img :src="statueImages[2]" class="w-20 h-24 sm:w-24 sm:h-28 object-contain mx-auto mix-blend-multiply" alt="" />
+              <img :src="statueImages[2]" class="w-16 h-20 sm:w-24 sm:h-28 object-contain mx-auto mix-blend-multiply" alt="" />
             </div>
             <div>
-              <span class="font-bold text-2xl sm:text-3xl uppercase tracking-wider">{{ cert.date }}</span>
+              <span class="font-bold text-xl sm:text-3xl uppercase tracking-wider">{{ cert.date }}</span>
             </div>
           </div>
 
           <!-- Template C -->
-          <div v-else class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950 relative">
+          <div v-else-if="getTemplate(cert, index) === 'C'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950 relative">
             <div>
               <h3 class="font-fancy font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-[0.9]">ROFIKUL*</h3>
-              <img :src="statueImages[1]" class="absolute top-0 right-0 w-28 h-40 sm:w-36 sm:h-48 object-cover mix-blend-multiply" alt="" />
+              <img :src="statueImages[1]" class="absolute top-0 right-0 w-24 h-32 sm:w-36 sm:h-48 object-cover mix-blend-multiply" alt="" />
             </div>
-            <div class="flex-grow flex flex-col justify-center my-4 max-w-[65%]">
-              <h4 class="font-fancy font-black text-2xl sm:text-3xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
+            <div class="flex-grow flex flex-col justify-center my-4 max-w-[75%] sm:max-w-[65%]">
+              <h4 class="font-fancy font-black text-xl sm:text-3xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
                 {{ cert.title }}
               </h4>
             </div>
             <div>
-              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-4">
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-2 sm:mb-4">
                 RECOGNIZING <span class="font-bold">ROFIKUL HUDA</span><br/>
                 FOR SIGNIFICANT CONTRIBUTIONS TO<br/>
                 {{ cert.issuer }}
@@ -121,15 +121,64 @@
               <div class="flex justify-between items-end">
                 <span class="font-bold text-lg sm:text-xl uppercase tracking-wider">{{ cert.date }}</span>
                 <div class="flex items-center gap-2">
-                  <svg class="w-12 h-5 sm:w-14 sm:h-6 opacity-80" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <svg class="w-10 h-4 sm:w-14 sm:h-6 opacity-80" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  <!-- Seal Icon -->
-                  <svg class="w-8 h-8 sm:w-10 sm:h-10 opacity-90" viewBox="0 0 40 40" fill="currentColor">
+                  <svg class="w-6 h-6 sm:w-10 sm:h-10 opacity-90" viewBox="0 0 40 40" fill="currentColor">
                     <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
                     <path d="M14 20l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Template D -->
+          <div v-else-if="getTemplate(cert, index) === 'D'" class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative z-10 overflow-hidden">
+            <img :src="statueImages[0]" class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.15] object-contain mix-blend-multiply pointer-events-none" alt="" />
+            <div class="flex justify-between items-start border-b-[1.5px] border-flax-smoke-950 pb-3 sm:pb-4 mb-4">
+              <span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-widest">ID-{{ String(index).padStart(4, '0') }}</span>
+              <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest">VERIFIED</span>
+            </div>
+            <h4 class="font-fancy font-black text-3xl sm:text-5xl uppercase leading-[0.85] tracking-tighter text-balance mb-auto mt-2">
+              {{ cert.title }}
+            </h4>
+            <div class="mt-auto grid grid-cols-2 gap-4 border-t-[1.5px] border-flax-smoke-950 pt-3 sm:pt-4 relative z-10">
+              <div>
+                <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 block mb-1">ISSUED BY</span>
+                <span class="font-bold text-[10px] sm:text-xs uppercase leading-tight">{{ cert.issuer }}</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 block mb-1">ACHIEVED ON</span>
+                <span class="font-bold text-[11px] sm:text-[13px] uppercase tracking-wider">{{ cert.date }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Template E -->
+          <div v-else class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950 bg-flax-smoke-950 text-flax-smoke-50">
+            <div class="flex justify-between items-center">
+              <h3 class="font-fancy font-black text-2xl sm:text-3xl uppercase tracking-tighter leading-none text-flax-smoke-300">ROFIKUL*</h3>
+              <div class="w-2 h-2 rounded-full bg-flax-smoke-300"></div>
+            </div>
+            <div class="relative my-4 sm:my-6 flex-grow flex flex-col justify-center">
+              <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.9] tracking-tighter text-balance text-flax-smoke-50 relative z-10">
+                {{ cert.title }}
+              </h4>
+              <img :src="statueImages[1]" class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-40 mix-blend-screen pointer-events-none" alt="" />
+            </div>
+            <div class="flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase">
+              <div class="flex justify-between border-b border-flax-smoke-800 pb-1.5 sm:pb-2">
+                <span class="opacity-60">RECIPIENT:</span>
+                <span class="font-bold text-flax-smoke-300">ROFIKUL HUDA</span>
+              </div>
+              <div class="flex justify-between border-b border-flax-smoke-800 pb-1.5 sm:pb-2">
+                <span class="opacity-60">AUTHORITY:</span>
+                <span class="font-bold">{{ cert.issuer }}</span>
+              </div>
+              <div class="flex justify-between pt-1">
+                <span class="opacity-60">DATE:</span>
+                <span class="font-bold tracking-widest text-[9px] sm:text-[10px]">{{ cert.date }}</span>
               </div>
             </div>
           </div>
@@ -286,17 +335,17 @@
   ];
 
   // Deterministic template assignment based on cert id hash
-  const getTemplate = (cert: Certification, index: number): 'A' | 'B' | 'C' => {
-    const templates: ('A' | 'B' | 'C')[] = ['A', 'B', 'C'];
+  const getTemplate = (cert: Certification, index: number): 'A' | 'B' | 'C' | 'D' | 'E' => {
+    const templates: ('A' | 'B' | 'C' | 'D' | 'E')[] = ['A', 'B', 'C', 'D', 'E'];
     if (cert.id) {
       let hash = 0;
       for (let i = 0; i < cert.id.length; i++) {
         hash = ((hash << 5) - hash) + cert.id.charCodeAt(i);
         hash |= 0;
       }
-      return templates[Math.abs(hash) % 3];
+      return templates[Math.abs(hash) % 5];
     }
-    return templates[index % 3];
+    return templates[index % 5];
   };
 
   // For marquee: duplicate items to create seamless loop
