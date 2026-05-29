@@ -25,44 +25,24 @@
       </div>
     </div>
 
-    <!-- Navigation and Help Text -->
-    <div class="mt-12 flex justify-between items-center w-full px-1 border-b border-flax-smoke-300 pb-4">
-      <span class="font-mono text-xs uppercase opacity-60 tracking-widest flex items-center gap-2 select-none">
-        <span class="w-1.5 h-1.5 bg-flax-smoke-950 inline-block animate-pulse"></span>
-        Drag or swipe to explore
-      </span>
-      <div class="flex gap-2">
-        <button 
-          @click="scrollPrev"
-          class="w-10 h-10 border border-flax-smoke-950 flex items-center justify-center text-flax-smoke-950 hover:bg-flax-smoke-950 hover:text-flax-smoke-50 transition-colors uppercase font-mono text-xs select-none cursor-pointer"
-          aria-label="Previous"
-        >
-          ←
-        </button>
-        <button 
-          @click="scrollNext"
-          class="w-10 h-10 border border-flax-smoke-950 flex items-center justify-center text-flax-smoke-950 hover:bg-flax-smoke-950 hover:text-flax-smoke-50 transition-colors uppercase font-mono text-xs select-none cursor-pointer"
-          aria-label="Next"
-        >
-          →
-        </button>
-      </div>
-    </div>
-
-    <!-- Credential Scroll Container -->
-    <div class="mt-8 sm:mt-12 w-full overflow-hidden relative" style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
+    <!-- Credential Marquee -->
+    <div
+      class="mt-16 sm:mt-24 w-full overflow-hidden relative"
+      style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);"
+    >
       <div
-        ref="containerRef"
+        ref="marqueeContainer"
         id="cert-marquee"
-        class="flex gap-6 overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing select-none py-2 will-change-transform"
-        @mousedown="onMouseDown"
-        @mousemove="onMouseMove"
-        @mouseup="onMouseUpOrLeave"
-        @mouseleave="onMouseUpOrLeave"
+        class="flex gap-6 whitespace-nowrap will-change-transform select-none cursor-grab active:cursor-grabbing"
+        @pointerdown="handlePointerDown"
+        @pointermove="handlePointerMove"
+        @pointerup="handlePointerUp"
+        @pointercancel="handlePointerUp"
+        @wheel="handleWheel"
       >
         <div
-          v-for="(cert, index) in certifications"
-          :key="`cert-${cert.id || index}`"
+          v-for="(cert, index) in marqueeItems"
+          :key="`cert-${index}`"
           @click="handleCardClick(cert)"
           class="cert-poster flex-shrink-0 w-[320px] sm:w-[380px] h-[460px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none"
         >
@@ -284,7 +264,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, onMounted, ref, nextTick, watch } from 'vue';
+  import { onBeforeMount, onMounted, onUnmounted, ref, nextTick, watch, computed } from 'vue';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
   import { textSplitterIntoChar, isVideo } from '@/functions';
@@ -318,6 +298,13 @@
     }
     return templates[index % 3];
   };
+
+  // For marquee: duplicate items to create seamless loop
+  const marqueeItems = computed(() => {
+    if (certifications.value.length === 0) return [];
+    // Duplicate 3 times for seamless loop
+    return [...certifications.value, ...certifications.value, ...certifications.value];
+  });
 
   // Modal State
   const selectedCert = ref<Certification | null>(null);
@@ -366,60 +353,190 @@
     document.body.style.overflow = '';
   };
 
-  // Scroll and Drag State
-  const containerRef = ref<HTMLElement | null>(null);
+  // Marquee state and ref
+  const marqueeContainer = ref<HTMLElement | null>(null);
+
+  let currentX = 0;
   const isDragging = ref(false);
-  const startX = ref(0);
-  const scrollLeftStart = ref(0);
-  const dragDistance = ref(0);
+  let startX = 0;
+  let startScrollX = 0;
+  let velocityX = 0;
+  let lastPointerX = 0;
+  let lastTime = 0;
+  let animationFrameId: number | null = null;
+  let oneSetWidth = 0;
+  const autoScrollSpeed = -0.8; // pixels per frame. Negative means moving left.
+  let inertiaVelocity = 0;
+  let isInertia = false;
+  const friction = 0.95;
 
-  const onMouseDown = (e: MouseEvent) => {
-    if (!containerRef.value) return;
+  // Drag threshold to prevent clicking card when dragging
+  const wasDragged = ref(false);
+
+  const updateDimensions = () => {
+    const container = marqueeContainer.value;
+    if (!container || !container.children.length) return;
+
+    const totalCards = certifications.value.length;
+    if (totalCards === 0) return;
+
+    const firstCard = container.children[0] as HTMLElement;
+    const gap = 24; // gap-6 is 24px
+    const cardWidth = firstCard.offsetWidth + gap;
+    oneSetWidth = cardWidth * totalCards;
+  };
+
+  const wrapX = () => {
+    if (oneSetWidth <= 0) return;
+    // Set 2 starts at -oneSetWidth and ends at -2 * oneSetWidth.
+    // We keep currentX in the range [-2 * oneSetWidth, -oneSetWidth].
+    while (currentX > -oneSetWidth) {
+      currentX -= oneSetWidth;
+    }
+    while (currentX < -2 * oneSetWidth) {
+      currentX += oneSetWidth;
+    }
+  };
+
+  const animate = () => {
+    if (oneSetWidth <= 0) {
+      animationFrameId = requestAnimationFrame(animate);
+      return;
+    }
+
+    if (isDragging.value) {
+      // Position is updated in pointermove handler
+    } else if (isInertia) {
+      currentX += inertiaVelocity;
+      inertiaVelocity *= friction;
+
+      wrapX();
+
+      // Once absolute inertia falls to auto scroll speed, return to auto-scroll
+      if (Math.abs(inertiaVelocity) <= Math.abs(autoScrollSpeed)) {
+        isInertia = false;
+        inertiaVelocity = 0;
+      }
+    } else {
+      // Constant auto-scroll
+      currentX += autoScrollSpeed;
+      wrapX();
+    }
+
+    if (marqueeContainer.value) {
+      marqueeContainer.value.style.transform = `translate3d(${currentX}px, 0, 0)`;
+    }
+
+    animationFrameId = requestAnimationFrame(animate);
+  };
+
+  const initMarquee = () => {
+    updateDimensions();
+    if (oneSetWidth > 0 && currentX === 0) {
+      currentX = -oneSetWidth;
+    }
+
+    if (animationFrameId === null) {
+      animate();
+    }
+  };
+
+  // Pointer Handlers
+  const handlePointerDown = (e: PointerEvent) => {
+    if (oneSetWidth <= 0) return;
+
+    // Only allow primary button dragging
+    if (e.button !== 0) return;
+
     isDragging.value = true;
-    dragDistance.value = 0;
-    startX.value = e.pageX - containerRef.value.offsetLeft;
-    scrollLeftStart.value = containerRef.value.scrollLeft;
+    isInertia = false;
+    inertiaVelocity = 0;
+    wasDragged.value = false;
+
+    startX = e.clientX;
+    startScrollX = currentX;
+
+    lastPointerX = e.clientX;
+    lastTime = performance.now();
+    velocityX = 0;
+
+    marqueeContainer.value?.setPointerCapture(e.pointerId);
   };
 
-  const onMouseMove = (e: MouseEvent) => {
-    if (!isDragging.value || !containerRef.value) return;
-    e.preventDefault();
-    const x = e.pageX - containerRef.value.offsetLeft;
-    const walk = (x - startX.value) * 1.5;
-    dragDistance.value = Math.abs(x - startX.value);
-    containerRef.value.scrollLeft = scrollLeftStart.value - walk;
+  const handlePointerMove = (e: PointerEvent) => {
+    if (!isDragging.value) return;
+
+    const deltaX = e.clientX - startX;
+    
+    // If movement is larger than 6px, mark as dragged
+    if (Math.abs(deltaX) > 6) {
+      wasDragged.value = true;
+    }
+
+    currentX = startScrollX + deltaX;
+    wrapX();
+
+    const now = performance.now();
+    const dt = now - lastTime;
+    if (dt > 0) {
+      const instantVelocity = (e.clientX - lastPointerX) / dt; // px/ms
+      const instantVelocityPxPerFrame = instantVelocity * 16.7; // px/frame
+      velocityX = velocityX * 0.4 + instantVelocityPxPerFrame * 0.6;
+    }
+
+    lastPointerX = e.clientX;
+    lastTime = now;
   };
 
-  const onMouseUpOrLeave = () => {
+  const handlePointerUp = (e: PointerEvent) => {
     if (!isDragging.value) return;
     isDragging.value = false;
+    marqueeContainer.value?.releasePointerCapture(e.pointerId);
+
+    const maxVelocity = 40;
+    velocityX = Math.max(-maxVelocity, Math.min(maxVelocity, velocityX));
+
+    if (Math.abs(velocityX) > 0.5) {
+      isInertia = true;
+      inertiaVelocity = velocityX;
+    } else {
+      isInertia = false;
+    }
   };
 
+  // Mouse wheel listener that maps vertical and horizontal scrolls to marquee movement
+  const handleWheel = (e: WheelEvent) => {
+    const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+    if (delta === 0) return;
+
+    // Intercept scroll
+    e.preventDefault();
+
+    isInertia = true;
+    currentX -= delta * 0.4; // adjusts sensitivity
+    wrapX();
+
+    // Set decaying momentum from scroll
+    inertiaVelocity = -delta * 0.12;
+  };
+
+  // Handle card click, preventing trigger if dragging
   const handleCardClick = (cert: Certification) => {
-    if (dragDistance.value > 10) return;
+    if (wasDragged.value) {
+      wasDragged.value = false;
+      return;
+    }
     openModal(cert);
   };
 
-  const scrollPrev = () => {
-    if (!containerRef.value) return;
-    const card = containerRef.value.querySelector('.cert-poster') as HTMLElement;
-    const cardWidth = card ? card.offsetWidth + 24 : 404; // width + gap
-    gsap.to(containerRef.value, {
-      scrollLeft: containerRef.value.scrollLeft - cardWidth,
-      duration: 0.5,
-      ease: 'power2.out',
-    });
-  };
-
-  const scrollNext = () => {
-    if (!containerRef.value) return;
-    const card = containerRef.value.querySelector('.cert-poster') as HTMLElement;
-    const cardWidth = card ? card.offsetWidth + 24 : 404; // width + gap
-    gsap.to(containerRef.value, {
-      scrollLeft: containerRef.value.scrollLeft + cardWidth,
-      duration: 0.5,
-      ease: 'power2.out',
-    });
+  const handleResize = () => {
+    const prevOneSetWidth = oneSetWidth;
+    updateDimensions();
+    if (prevOneSetWidth > 0 && oneSetWidth > 0) {
+      const ratio = currentX / prevOneSetWidth;
+      currentX = ratio * oneSetWidth;
+      wrapX();
+    }
   };
 
   onBeforeMount(() => {
@@ -440,23 +557,29 @@
       0.01,
       0,
     );
+
+    // Start marquee
+    initMarquee();
+
+    window.addEventListener('resize', handleResize);
   });
 
+  onUnmounted(() => {
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    window.removeEventListener('resize', handleResize);
+  });
+
+  // Re-init marquee when data loads
   watch(certifications, async () => {
     await nextTick();
     ScrollTrigger.refresh();
+    initMarquee();
   });
 </script>
 
 <style scoped>
-.scrollbar-none {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-.scrollbar-none::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
