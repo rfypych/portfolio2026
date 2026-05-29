@@ -25,16 +25,45 @@
       </div>
     </div>
 
-    <!-- Credential Marquee -->
-    <div class="mt-16 sm:mt-24 w-full overflow-hidden relative" style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
+    <!-- Navigation and Help Text -->
+    <div class="mt-12 flex justify-between items-center w-full px-1 border-b border-flax-smoke-300 pb-4">
+      <span class="font-mono text-xs uppercase opacity-60 tracking-widest flex items-center gap-2 select-none">
+        <span class="w-1.5 h-1.5 bg-flax-smoke-950 inline-block animate-pulse"></span>
+        Drag or swipe to explore
+      </span>
+      <div class="flex gap-2">
+        <button 
+          @click="scrollPrev"
+          class="w-10 h-10 border border-flax-smoke-950 flex items-center justify-center text-flax-smoke-950 hover:bg-flax-smoke-950 hover:text-flax-smoke-50 transition-colors uppercase font-mono text-xs select-none cursor-pointer"
+          aria-label="Previous"
+        >
+          ←
+        </button>
+        <button 
+          @click="scrollNext"
+          class="w-10 h-10 border border-flax-smoke-950 flex items-center justify-center text-flax-smoke-950 hover:bg-flax-smoke-950 hover:text-flax-smoke-50 transition-colors uppercase font-mono text-xs select-none cursor-pointer"
+          aria-label="Next"
+        >
+          →
+        </button>
+      </div>
+    </div>
+
+    <!-- Credential Scroll Container -->
+    <div class="mt-8 sm:mt-12 w-full overflow-hidden relative" style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
       <div
+        ref="containerRef"
         id="cert-marquee"
-        class="flex gap-6 whitespace-nowrap will-change-transform"
+        class="flex gap-6 overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing select-none py-2 will-change-transform"
+        @mousedown="onMouseDown"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUpOrLeave"
+        @mouseleave="onMouseUpOrLeave"
       >
         <div
-          v-for="(cert, index) in marqueeItems"
-          :key="`cert-${index}`"
-          @click="openModal(cert)"
+          v-for="(cert, index) in certifications"
+          :key="`cert-${cert.id || index}`"
+          @click="handleCardClick(cert)"
           class="cert-poster flex-shrink-0 w-[320px] sm:w-[380px] h-[460px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none"
         >
           <!-- Template A -->
@@ -255,7 +284,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, onMounted, ref, nextTick, watch, computed } from 'vue';
+  import { onBeforeMount, onMounted, ref, nextTick, watch } from 'vue';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
   import { textSplitterIntoChar, isVideo } from '@/functions';
@@ -289,13 +318,6 @@
     }
     return templates[index % 3];
   };
-
-  // For marquee: duplicate items to create seamless loop
-  const marqueeItems = computed(() => {
-    if (certifications.value.length === 0) return [];
-    // Duplicate 3 times for seamless loop
-    return [...certifications.value, ...certifications.value, ...certifications.value];
-  });
 
   // Modal State
   const selectedCert = ref<Certification | null>(null);
@@ -344,32 +366,59 @@
     document.body.style.overflow = '';
   };
 
-  // Marquee animation
-  let marqueeAnim: gsap.core.Tween | null = null;
+  // Scroll and Drag State
+  const containerRef = ref<HTMLElement | null>(null);
+  const isDragging = ref(false);
+  const startX = ref(0);
+  const scrollLeftStart = ref(0);
+  const dragDistance = ref(0);
 
-  const initMarquee = () => {
-    const container = document.querySelector('#cert-marquee') as HTMLElement;
-    if (!container || !container.children.length) return;
+  const onMouseDown = (e: MouseEvent) => {
+    if (!containerRef.value) return;
+    isDragging.value = true;
+    dragDistance.value = 0;
+    startX.value = e.pageX - containerRef.value.offsetLeft;
+    scrollLeftStart.value = containerRef.value.scrollLeft;
+  };
 
-    const totalCards = certifications.value.length;
-    if (totalCards === 0) return;
+  const onMouseMove = (e: MouseEvent) => {
+    if (!isDragging.value || !containerRef.value) return;
+    e.preventDefault();
+    const x = e.pageX - containerRef.value.offsetLeft;
+    const walk = (x - startX.value) * 1.5;
+    dragDistance.value = Math.abs(x - startX.value);
+    containerRef.value.scrollLeft = scrollLeftStart.value - walk;
+  };
 
-    // Calculate width of one set of cards
-    const firstCard = container.children[0] as HTMLElement;
-    const gap = 24; // gap-6 = 1.5rem = 24px
-    const cardWidth = firstCard.offsetWidth + gap;
-    const oneSetWidth = cardWidth * totalCards;
+  const onMouseUpOrLeave = () => {
+    if (!isDragging.value) return;
+    isDragging.value = false;
+  };
 
-    // Kill previous animation
-    if (marqueeAnim) marqueeAnim.kill();
+  const handleCardClick = (cert: Certification) => {
+    if (dragDistance.value > 10) return;
+    openModal(cert);
+  };
 
-    gsap.set(container, { x: 0 });
+  const scrollPrev = () => {
+    if (!containerRef.value) return;
+    const card = containerRef.value.querySelector('.cert-poster') as HTMLElement;
+    const cardWidth = card ? card.offsetWidth + 24 : 404; // width + gap
+    gsap.to(containerRef.value, {
+      scrollLeft: containerRef.value.scrollLeft - cardWidth,
+      duration: 0.5,
+      ease: 'power2.out',
+    });
+  };
 
-    marqueeAnim = gsap.to(container, {
-      x: -oneSetWidth,
-      duration: totalCards * 6, // ~6s per card
-      ease: 'none',
-      repeat: -1,
+  const scrollNext = () => {
+    if (!containerRef.value) return;
+    const card = containerRef.value.querySelector('.cert-poster') as HTMLElement;
+    const cardWidth = card ? card.offsetWidth + 24 : 404; // width + gap
+    gsap.to(containerRef.value, {
+      scrollLeft: containerRef.value.scrollLeft + cardWidth,
+      duration: 0.5,
+      ease: 'power2.out',
     });
   };
 
@@ -391,20 +440,23 @@
       0.01,
       0,
     );
-
-    // Start marquee
-    initMarquee();
   });
 
-  // Re-init marquee when data loads
   watch(certifications, async () => {
     await nextTick();
     ScrollTrigger.refresh();
-    initMarquee();
   });
 </script>
 
 <style scoped>
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
