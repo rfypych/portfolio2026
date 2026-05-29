@@ -25,87 +25,120 @@
       </div>
     </div>
 
-    <!-- Bento Grid Showcase -->
-    <div class="mt-16 sm:mt-24 w-full">
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[300px]">
+    <!-- Credential Marquee -->
+    <div class="mt-16 sm:mt-24 w-full overflow-hidden relative">
+      <div
+        id="cert-marquee"
+        class="flex gap-6 whitespace-nowrap will-change-transform"
+      >
         <div
-          v-for="(cert, index) in certifications.slice(0, 4)"
-          :key="cert.id"
-          @click="handleBentoClick(cert)"
-          class="cert-card group relative cursor-pointer overflow-hidden border border-flax-smoke-950 bg-flax-smoke-50 transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]"
-          :class="getBentoClasses(index)"
-          :style="{ opacity: 0, transform: 'translateY(60px)' }"
+          v-for="(cert, index) in marqueeItems"
+          :key="`cert-${index}`"
+          @click="openModal(cert)"
+          class="cert-poster flex-shrink-0 w-[320px] sm:w-[380px] h-[460px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
         >
-          <!-- Background Hover Image/Video (Hidden by default) -->
-          <div v-if="cert.badgeUrl" class="absolute inset-0 bg-[#0B0B0A] opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-20 pointer-events-none">
-            <video v-if="isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"></video>
-            <img v-else :src="cert.badgeUrl" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]" />
-            <!-- Gradient Overlay for visual polish -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0A] via-[#0B0B0A]/20 to-transparent"></div>
-            
-            <!-- Hover State Arrow -->
-            <div class="absolute bottom-6 right-6 z-30">
-                <div class="w-12 h-12 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm flex items-center justify-center text-white opacity-0 -translate-y-4 translate-x-4 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
-                    <svg class="w-5 h-5 transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" /></svg>
+          <!-- Template A -->
+          <div v-if="getTemplate(cert, index) === 'A'" class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950">
+            <div>
+              <h3 class="font-fancy font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-[0.9]">ROFIKUL*</h3>
+              <img :src="statueImages[0]" class="absolute top-6 right-6 w-20 h-20 sm:w-24 sm:h-24 object-cover mix-blend-multiply" alt="" />
+            </div>
+            <div class="flex-grow flex flex-col justify-center my-4">
+              <h4 class="font-fancy font-black text-2xl sm:text-3xl uppercase leading-[0.9] tracking-tighter whitespace-normal" style="text-wrap: balance;">
+                {{ cert.title }}
+              </h4>
+            </div>
+            <div>
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed mb-6 whitespace-normal">
+                PRESENTED TO <span class="font-bold">ROFIKUL HUDA</span><br/>
+                FOR {{ cert.issuer }} RESEARCH
+              </p>
+              <div class="flex justify-between items-end border-t border-flax-smoke-950 pt-3">
+                <div>
+                  <span class="font-mono text-[9px] uppercase opacity-60">DATE:</span><br/>
+                  <span class="font-bold text-lg sm:text-xl uppercase tracking-wide">{{ cert.date }}</span>
                 </div>
+                <div class="flex flex-col items-center">
+                  <svg class="w-14 h-6 sm:w-16 sm:h-7 opacity-80 mb-0.5" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="font-mono text-[8px] uppercase tracking-widest border-t border-flax-smoke-950 pt-0.5 text-center">SIGNATURE</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Typographic Poster Content (Default State) -->
-          <div class="relative h-full flex flex-col justify-between p-6 sm:p-8 z-10 text-flax-smoke-950 transition-opacity duration-[600ms] group-hover:opacity-0">
-            <!-- Top Header -->
-            <div class="flex justify-between items-start w-full border-b border-flax-smoke-950 pb-4">
-              <h3 class="font-bold uppercase tracking-widest text-xs sm:text-sm bg-flax-smoke-950 text-flax-smoke-50 px-3 py-1">
-                {{ cert.type === 'bounty' ? 'BUG BOUNTY*' : cert.type === 'hall-of-fame' ? 'HALL OF FAME*' : cert.type === 'vd-certificate' ? 'VD CERTIFICATE*' : 'COURSE CERTIFICATE*' }}
-              </h3>
-              <span class="font-mono text-[10px] uppercase tracking-widest opacity-60 flex flex-col items-end">
-                <span>SERIAL NO.</span>
-                <span class="font-bold">{{ String(index + 1).padStart(3, '0') }}-{{ new Date().getFullYear() }}</span>
-              </span>
-            </div>
-
-            <!-- Center Massive Title -->
-            <div class="flex-grow flex flex-col justify-center my-8">
-              <h4 class="font-fancy font-black uppercase leading-[0.9] tracking-tighter" :class="getTitleSize(index)" style="text-wrap: balance;">
+          <!-- Template B -->
+          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950">
+            <div>
+              <div class="flex items-center gap-2 mb-6">
+                <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest">OXRPHY®</span>
+                <span class="font-bold text-[10px] sm:text-xs uppercase tracking-widest">CERTIFICATION</span>
+              </div>
+              <h4 class="font-fancy font-black text-3xl sm:text-4xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
                 {{ cert.title }}
               </h4>
-              <p class="font-mono text-[10px] sm:text-xs uppercase mt-6 max-w-[90%] opacity-80 leading-relaxed border-l-2 border-flax-smoke-950 pl-4">
-                THIS CREDENTIAL CERTIFIES THAT <span class="font-bold">ROFIKUL HUDA</span> HAS SUCCESSFULLY COMPLETED OR BEEN ACKNOWLEDGED BY <span class="font-bold">{{ cert.issuer }}</span> FOR SIGNIFICANT CONTRIBUTIONS.
-              </p>
             </div>
+            <div class="flex-grow flex flex-col justify-center my-4">
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-4">
+                This certifies that<br/>
+                <span class="font-bold text-sm sm:text-base">[ROFIKUL HUDA]</span><br/>
+                has successfully completed or been acknowledged by {{ cert.issuer }}.
+              </p>
+              <img :src="statueImages[2]" class="w-20 h-24 sm:w-24 sm:h-28 object-contain mx-auto mix-blend-multiply" alt="" />
+            </div>
+            <div>
+              <span class="font-bold text-2xl sm:text-3xl uppercase tracking-wider">{{ cert.date }}</span>
+            </div>
+          </div>
 
-            <!-- Bottom Footer -->
-            <div class="flex justify-between items-end border-t border-flax-smoke-950 pt-4 w-full">
-              <div class="flex flex-col">
-                <span class="font-mono text-[10px] uppercase opacity-60">DATE:</span>
-                <span class="font-bold uppercase tracking-wider text-xl sm:text-2xl">{{ cert.date }}</span>
-              </div>
-              
-              <!-- Signature Line & SVG -->
-              <div class="flex flex-col items-center">
-                <!-- Fake Signature SVG -->
-                <svg class="w-16 h-8 sm:w-20 sm:h-10 opacity-80 mb-1" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span class="font-mono text-[9px] uppercase tracking-widest border-t border-flax-smoke-950 pt-1 w-full text-center">SIGNATURE</span>
+          <!-- Template C -->
+          <div v-else class="h-full flex flex-col justify-between p-6 sm:p-8 text-flax-smoke-950 relative">
+            <div>
+              <h3 class="font-fancy font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-[0.9]">ROFIKUL*</h3>
+              <img :src="statueImages[1]" class="absolute top-0 right-0 w-28 h-40 sm:w-36 sm:h-48 object-cover mix-blend-multiply" alt="" />
+            </div>
+            <div class="flex-grow flex flex-col justify-center my-4 max-w-[65%]">
+              <h4 class="font-fancy font-black text-2xl sm:text-3xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
+                {{ cert.title }}
+              </h4>
+            </div>
+            <div>
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-4">
+                RECOGNIZING <span class="font-bold">ROFIKUL HUDA</span><br/>
+                FOR SIGNIFICANT CONTRIBUTIONS TO<br/>
+                {{ cert.issuer }}
+              </p>
+              <div class="flex justify-between items-end">
+                <span class="font-bold text-lg sm:text-xl uppercase tracking-wider">{{ cert.date }}</span>
+                <div class="flex items-center gap-2">
+                  <svg class="w-12 h-5 sm:w-14 sm:h-6 opacity-80" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <!-- Seal Icon -->
+                  <svg class="w-8 h-8 sm:w-10 sm:h-10 opacity-90" viewBox="0 0 40 40" fill="currentColor">
+                    <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M14 20l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Explore All Credentials Button -->
-      <div v-if="certifications.length > 4" class="mt-12 flex justify-center w-full relative z-50">
-        <router-link
-          to="/credentials"
-          class="group border-flax-smoke-300 text-flax-smoke-800 hover:bg-flax-smoke-300 hover:text-flax-smoke-950 flex items-center justify-center gap-4 rounded-full border px-10 py-4 font-bold uppercase tracking-widest transition-all duration-500"
-        >
-          Explore All Credentials
-          <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 w-6 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
-            {{ certifications.length }}
-          </span>
-        </router-link>
-      </div>
+    <!-- Explore All Credentials Button -->
+    <div v-if="certifications.length > 0" class="mt-12 flex justify-center w-full relative z-50">
+      <router-link
+        to="/credentials"
+        class="group border-flax-smoke-300 text-flax-smoke-800 hover:bg-flax-smoke-300 hover:text-flax-smoke-950 flex items-center justify-center gap-4 rounded-full border px-10 py-4 font-bold uppercase tracking-widest transition-all duration-500"
+      >
+        Explore All Credentials
+        <span class="bg-flax-smoke-100 group-hover:bg-flax-smoke-950 flex h-6 w-6 items-center justify-center rounded-full text-xs text-flax-smoke-950 group-hover:text-flax-smoke-50 transition-colors duration-500">
+          {{ certifications.length }}
+        </span>
+      </router-link>
     </div>
 
     <!-- Loading State -->
@@ -128,7 +161,7 @@
       </p>
     </div>
 
-    <!-- Image Modal -->
+    <!-- Click Modal -->
     <Teleport to="body">
       <transition name="fade">
         <div 
@@ -151,20 +184,30 @@
               class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none"
             ></video>
             <img
-              v-else
+              v-else-if="selectedCert.badgeUrl"
               :src="selectedCert.badgeUrl"
               class="w-full h-auto max-h-[70vh] object-contain drop-shadow-2xl select-none"
             />
             <div class="flex flex-col items-center gap-4 text-white text-center">
               <h4 class="font-fancy text-2xl md:text-4xl font-extrabold uppercase">{{ selectedCert.title }}</h4>
-              <a 
-                v-if="selectedCert.credentialUrl" 
-                :href="selectedCert.credentialUrl" 
-                target="_blank" 
-                class="px-8 py-3 bg-flax-smoke-300 text-black font-semibold rounded-full hover:bg-flax-smoke-200 transition-colors text-sm uppercase tracking-widest mt-2"
-              >
-                Verify Credential
-              </a>
+              <p class="font-mono text-sm opacity-60">{{ selectedCert.issuer }} · {{ selectedCert.date }}</p>
+              <div class="flex gap-4 mt-2">
+                <a 
+                  v-if="selectedCert.credentialUrl" 
+                  :href="selectedCert.credentialUrl" 
+                  target="_blank" 
+                  class="px-8 py-3 bg-flax-smoke-300 text-black font-semibold rounded-full hover:bg-flax-smoke-200 transition-colors text-sm uppercase tracking-widest"
+                >
+                  Verify Credential
+                </a>
+                <router-link
+                  v-if="selectedCert.writeupContent || selectedCert.writeupUrl"
+                  :to="{ name: 'writeup-view', params: { id: selectedCert.id } }"
+                  class="px-8 py-3 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors text-sm uppercase tracking-widest"
+                >
+                  Read Writeup
+                </router-link>
+              </div>
             </div>
           </div>
         </div>
@@ -223,7 +266,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, onMounted, ref, nextTick, watch } from 'vue';
+  import { onBeforeMount, onMounted, ref, nextTick, watch, computed } from 'vue';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
   import { textSplitterIntoChar, isVideo } from '@/functions';
@@ -238,49 +281,51 @@
 
   const certHeading = ref('Credentials /');
 
-  // Bento Grid Layout Logic
-  const getBentoClasses = (index: number) => {
-    // Pattern to create asymmetric bento grid. Repeat every 7 items.
-    const mod = index % 7;
-    
-    if (mod === 0) return 'col-span-1 md:col-span-2 lg:col-span-2 row-span-2'; // Large Hero
-    if (mod === 1) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
-    if (mod === 2) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
-    if (mod === 3) return 'col-span-1 md:col-span-2 lg:col-span-2 row-span-1'; // Wide Horizontal
-    if (mod === 4) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
-    if (mod === 5) return 'col-span-1 md:col-span-2 lg:col-span-2 row-span-1'; // Wide Horizontal
-    if (mod === 6) return 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1'; // Standard
-    
-    return 'col-span-1 row-span-1';
-  };
+  const statueImages = [
+    '/statues/statue-1.png',
+    '/statues/statue-2.png',
+    '/statues/statue-3.png',
+  ];
 
-  const getTitleSize = (index: number) => {
-    const mod = index % 7;
-    if (mod === 0) return 'text-3xl md:text-5xl lg:text-6xl';
-    if (mod === 3 || mod === 5) return 'text-2xl md:text-3xl lg:text-4xl';
-    return 'text-2xl md:text-3xl';
-  };
-
-
-
-  const handleBentoClick = (cert: Certification) => {
-    if (cert.writeupContent || cert.writeupUrl) {
-      if (cert.writeupContent) {
-        openWriteup(cert);
-      } else if (cert.writeupUrl) {
-        window.open(cert.writeupUrl, '_blank');
+  // Deterministic template assignment based on cert id hash
+  const getTemplate = (cert: Certification, index: number): 'A' | 'B' | 'C' => {
+    const templates: ('A' | 'B' | 'C')[] = ['A', 'B', 'C'];
+    if (cert.id) {
+      let hash = 0;
+      for (let i = 0; i < cert.id.length; i++) {
+        hash = ((hash << 5) - hash) + cert.id.charCodeAt(i);
+        hash |= 0;
       }
-    } else {
-      openModal(cert);
+      return templates[Math.abs(hash) % 3];
     }
+    return templates[index % 3];
   };
 
-  // Image Modal State
+  // For marquee: duplicate items to create seamless loop
+  const marqueeItems = computed(() => {
+    if (certifications.value.length === 0) return [];
+    // Duplicate 3 times for seamless loop
+    return [...certifications.value, ...certifications.value, ...certifications.value];
+  });
+
+  // Modal State
   const selectedCert = ref<Certification | null>(null);
 
   const openModal = (cert: Certification) => {
+    // If writeup content, open writeup overlay
+    if (cert.writeupContent) {
+      openWriteup(cert);
+      return;
+    }
+    // If writeup URL, navigate
+    if (cert.writeupUrl) {
+      window.open(cert.writeupUrl, '_blank');
+      return;
+    }
+    // Otherwise open image modal
     if (cert.badgeUrl) {
       selectedCert.value = cert;
+      document.body.style.overflow = 'hidden';
     } else if (cert.credentialUrl) {
       window.open(cert.credentialUrl, '_blank');
     }
@@ -288,6 +333,7 @@
 
   const closeModal = () => {
     selectedCert.value = null;
+    document.body.style.overflow = '';
   };
 
   // Writeup Overlay State
@@ -309,6 +355,35 @@
     document.body.style.overflow = '';
   };
 
+  // Marquee animation
+  let marqueeAnim: gsap.core.Tween | null = null;
+
+  const initMarquee = () => {
+    const container = document.querySelector('#cert-marquee') as HTMLElement;
+    if (!container || !container.children.length) return;
+
+    const totalCards = certifications.value.length;
+    if (totalCards === 0) return;
+
+    // Calculate width of one set of cards
+    const firstCard = container.children[0] as HTMLElement;
+    const gap = 24; // gap-6 = 1.5rem = 24px
+    const cardWidth = firstCard.offsetWidth + gap;
+    const oneSetWidth = cardWidth * totalCards;
+
+    // Kill previous animation
+    if (marqueeAnim) marqueeAnim.kill();
+
+    gsap.set(container, { x: 0 });
+
+    marqueeAnim = gsap.to(container, {
+      x: -oneSetWidth,
+      duration: totalCards * 6, // ~6s per card
+      ease: 'none',
+      repeat: -1,
+    });
+  };
+
   onBeforeMount(() => {
     certHeading.value = textSplitterIntoChar(certHeading.value, true, true);
   });
@@ -328,25 +403,15 @@
       0,
     );
 
-    // Staggered row reveal
-    gsap.to('.cert-card', {
-      scrollTrigger: {
-        trigger: '#certifications-section',
-        start: 'top 75%',
-        toggleActions: 'play none none reverse',
-      },
-      opacity: 1,
-      y: 0,
-      duration: 0.7,
-      stagger: 0.1,
-      ease: 'power4.inOut',
-    });
+    // Start marquee
+    initMarquee();
   });
 
-  // Re-animate when data loads dynamically
+  // Re-init marquee when data loads
   watch(certifications, async () => {
     await nextTick();
     ScrollTrigger.refresh();
+    initMarquee();
   });
 </script>
 
