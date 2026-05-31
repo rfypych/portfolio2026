@@ -35,9 +35,6 @@
         id="cert-marquee"
         class="flex gap-6 whitespace-nowrap will-change-transform select-none cursor-grab active:cursor-grabbing"
         @pointerdown="handlePointerDown"
-        @pointermove="handlePointerMove"
-        @pointerup="handlePointerUp"
-        @pointercancel="handlePointerUp"
         @wheel="handleWheel"
       >
         <div
@@ -47,90 +44,71 @@
           class="cert-poster flex-shrink-0 w-[280px] sm:w-[380px] h-[400px] sm:h-[520px] border border-flax-smoke-950 bg-flax-smoke-50 cursor-pointer relative overflow-hidden select-none"
         >
           <!-- Template A -->
-          <div v-if="getTemplate(cert, index) === 'A'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950">
-            <div>
-              <h3 class="font-fancy font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-[0.9]">ROFIKUL*</h3>
-              <img :src="statueImages[0]" class="absolute top-5 right-5 w-16 h-16 sm:w-24 sm:h-24 object-cover mix-blend-multiply" alt="" />
+          <div v-if="getTemplate(cert, index) === 'A'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950 relative overflow-hidden">
+            <div class="flex items-center justify-between z-10 border-b border-flax-smoke-950 pb-3">
+              <span class="font-mono text-[9px] sm:text-[10px] uppercase font-bold tracking-widest">ACHIEVEMENT</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
             </div>
-            <div class="flex-grow flex flex-col justify-center my-4">
-              <h4 class="font-fancy font-black text-2xl sm:text-3xl uppercase leading-[0.9] tracking-tighter whitespace-normal" style="text-wrap: balance;">
+            <div class="relative my-4 flex-grow flex flex-col justify-center z-10">
+              <h4 lang="en" class="font-fancy font-black text-3xl sm:text-4xl uppercase leading-[0.85] tracking-tighter text-balance break-words hyphens-auto pr-2">
                 {{ cert.title }}
               </h4>
             </div>
-            <div>
-              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed mb-4 sm:mb-6 whitespace-normal">
-                PRESENTED TO <span class="font-bold">ROFIKUL HUDA</span><br/>
-                FOR {{ cert.issuer }} RESEARCH
-              </p>
-              <div class="flex justify-between items-end border-t border-flax-smoke-950 pt-3">
-                <div>
-                  <span class="font-mono text-[9px] uppercase opacity-60">DATE:</span><br/>
-                  <span class="font-bold text-lg sm:text-xl uppercase tracking-wide">{{ cert.date }}</span>
+            <div class="z-10 mt-auto">
+              <div class="flex justify-between items-end">
+                <div class="flex flex-col">
+                  <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 mb-1">RECOGNITION BY</span>
+                  <span class="font-bold text-[10px] sm:text-xs uppercase">{{ cert.issuer }}</span>
                 </div>
-                <div class="flex flex-col items-center">
-                  <svg class="w-12 h-5 sm:w-16 sm:h-7 opacity-80 mb-0.5" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <span class="font-mono text-[8px] uppercase tracking-widest border-t border-flax-smoke-950 pt-0.5 text-center">SIGNATURE</span>
+                <div class="flex flex-col text-right">
+                  <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 mb-1">AWARDED</span>
+                  <span class="font-bold text-[10px] sm:text-xs uppercase">{{ cert.date }}</span>
                 </div>
               </div>
             </div>
+            <img :src="statueImages[2]" class="absolute -bottom-4 right-4 w-32 sm:w-48 opacity-[0.25] object-contain mix-blend-multiply pointer-events-none" alt="" />
           </div>
 
           <!-- Template B -->
-          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950">
-            <div>
-              <div class="flex items-center gap-2 mb-4 sm:mb-6">
-                <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">OXRPHY®</span>
-                <span class="font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">CERTIFICATION</span>
+          <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative overflow-hidden">
+            <img :src="statueImages[0]" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 opacity-[0.12] object-contain mix-blend-multiply pointer-events-none" alt="" />
+            <div class="flex justify-between items-center z-10 mb-6">
+              <div class="bg-flax-smoke-950 text-flax-smoke-50 px-3 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full">
+                CREDENTIAL
               </div>
-              <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
-                {{ cert.title }}
-              </h4>
+              <span class="font-mono text-[10px] sm:text-xs font-bold">{{ cert.date }}</span>
             </div>
-            <div class="flex-grow flex flex-col justify-center my-4">
-              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-2 sm:mb-4">
-                This certifies that<br/>
-                <span class="font-bold text-sm sm:text-base">[ROFIKUL HUDA]</span><br/>
-                has successfully completed or been acknowledged by {{ cert.issuer }}.
-              </p>
-              <img :src="statueImages[2]" class="w-16 h-20 sm:w-24 sm:h-28 object-contain mx-auto mix-blend-multiply" alt="" />
-            </div>
-            <div>
-              <span class="font-bold text-xl sm:text-3xl uppercase tracking-wider">{{ cert.date }}</span>
+            <h4 lang="en" class="font-fancy font-black text-3xl sm:text-4xl uppercase leading-[0.85] tracking-tighter text-balance text-center mt-auto mb-auto z-10 break-words hyphens-auto">
+              {{ cert.title }}
+            </h4>
+            <div class="mt-auto border-t-[1.5px] border-flax-smoke-950 pt-3 sm:pt-4 z-10 text-center flex flex-col items-center">
+              <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 mb-1">PROUDLY PRESENTED TO ROFIKUL HUDA BY</span>
+              <span class="font-bold text-[10px] sm:text-xs uppercase">{{ cert.issuer }}</span>
             </div>
           </div>
 
           <!-- Template C -->
-          <div v-else-if="getTemplate(cert, index) === 'C'" class="h-full flex flex-col justify-between p-5 sm:p-8 text-flax-smoke-950 relative">
-            <div>
-              <h3 class="font-fancy font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-[0.9]">ROFIKUL*</h3>
-              <img :src="statueImages[1]" class="absolute top-0 right-0 w-24 h-32 sm:w-36 sm:h-48 object-cover mix-blend-multiply" alt="" />
-            </div>
-            <div class="flex-grow flex flex-col justify-center my-4 max-w-[75%] sm:max-w-[65%]">
-              <h4 class="font-fancy font-black text-xl sm:text-3xl uppercase leading-[0.85] tracking-tighter whitespace-normal" style="text-wrap: balance;">
-                {{ cert.title }}
-              </h4>
-            </div>
-            <div>
-              <p class="font-mono text-[9px] sm:text-[10px] uppercase leading-relaxed whitespace-normal mb-2 sm:mb-4">
-                RECOGNIZING <span class="font-bold">ROFIKUL HUDA</span><br/>
-                FOR SIGNIFICANT CONTRIBUTIONS TO<br/>
-                {{ cert.issuer }}
-              </p>
-              <div class="flex justify-between items-end">
-                <span class="font-bold text-lg sm:text-xl uppercase tracking-wider">{{ cert.date }}</span>
-                <div class="flex items-center gap-2">
-                  <svg class="w-10 h-4 sm:w-14 sm:h-6 opacity-80" viewBox="0 0 100 30" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M5,25 Q15,5 25,15 T45,15 T65,10 Q80,0 95,20" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <svg class="w-6 h-6 sm:w-10 sm:h-10 opacity-90" viewBox="0 0 40 40" fill="currentColor">
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
-                    <path d="M14 20l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
+          <div v-else-if="getTemplate(cert, index) === 'C'" class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative overflow-hidden">
+            <div class="flex justify-between items-start z-10">
+              <h3 class="font-fancy font-black text-4xl sm:text-5xl uppercase tracking-tighter leading-none">OXR*</h3>
+              <div class="text-right flex flex-col">
+                <span class="font-bold text-[10px] sm:text-xs uppercase">{{ cert.date }}</span>
+                <span class="font-mono text-[8px] sm:text-[9px] uppercase opacity-60 mt-1">ISSUED</span>
               </div>
             </div>
+            <div class="my-auto z-10">
+              <h4 lang="en" class="font-fancy font-black text-3xl sm:text-4xl uppercase leading-[0.85] tracking-tighter text-balance break-words hyphens-auto pr-2">
+                {{ cert.title }}
+              </h4>
+              <p class="font-mono text-[9px] sm:text-[10px] uppercase font-bold mt-4 max-w-[80%]">
+                VERIFIED BY {{ cert.issuer }}
+              </p>
+            </div>
+            <div class="mt-auto z-10 flex justify-between items-end border-t border-flax-smoke-950 pt-4">
+              <div class="w-16 h-1 bg-flax-smoke-950"></div>
+              <svg class="w-8 h-8 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8L16 12L12 16M8 12H16"/></svg>
+            </div>
+            <img :src="statueImages[1]" class="absolute -right-8 bottom-12 w-40 sm:w-56 opacity-[0.2] object-contain mix-blend-multiply pointer-events-none" alt="" />
           </div>
 
           <!-- Template D -->
@@ -140,7 +118,7 @@
               <span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-widest">ID-{{ String(index).padStart(4, '0') }}</span>
               <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest">VERIFIED</span>
             </div>
-            <h4 class="font-fancy font-black text-3xl sm:text-5xl uppercase leading-[0.85] tracking-tighter text-balance mb-auto mt-2">
+            <h4 lang="en" class="font-fancy font-black text-3xl sm:text-4xl uppercase leading-[0.85] tracking-tighter text-balance mb-auto mt-2 break-words hyphens-auto pr-2">
               {{ cert.title }}
             </h4>
             <div class="mt-auto grid grid-cols-2 gap-4 border-t-[1.5px] border-flax-smoke-950 pt-3 sm:pt-4 relative z-10">
@@ -162,7 +140,7 @@
               <div class="w-2 h-2 rounded-full bg-flax-smoke-950"></div>
             </div>
             <div class="relative my-4 sm:my-6 flex-grow flex flex-col justify-center z-10">
-              <h4 class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.9] tracking-tighter text-balance relative z-10">
+              <h4 lang="en" class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.9] tracking-tighter text-balance relative z-10 break-words hyphens-auto pr-2">
                 {{ cert.title }}
               </h4>
               <img :src="statueImages[1]" class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-20 mix-blend-multiply pointer-events-none" alt="" />
@@ -334,18 +312,30 @@
     '/statues/statue-3.png',
   ];
 
-  // Deterministic template assignment based on cert id hash
-  const getTemplate = (cert: Certification, index: number): 'A' | 'B' | 'C' | 'D' | 'E' => {
+  // Sequential template assignment based strictly on original index to prevent adjacent duplicates
+  // and ensure seamless wrapping between sets without any layout flashes.
+  const getTemplate = (_cert: Certification, index: number): 'A' | 'B' | 'C' | 'D' | 'E' => {
     const templates: ('A' | 'B' | 'C' | 'D' | 'E')[] = ['A', 'B', 'C', 'D', 'E'];
-    if (cert.id) {
-      let hash = 0;
-      for (let i = 0; i < cert.id.length; i++) {
-        hash = ((hash << 5) - hash) + cert.id.charCodeAt(i);
-        hash |= 0;
+    const n = certifications.value.length;
+    if (n === 0) return 'A'; // fallback
+    
+    const originalIndex = index % n;
+    
+    let templateIndex = originalIndex % templates.length;
+    let chosen = templates[templateIndex];
+    
+    // Fix boundary overlap: if this is the last item and its template equals the first item's template
+    if (originalIndex === n - 1 && n > 1) {
+      const firstChosen = templates[0];
+      const prevChosen = templates[(n - 2) % templates.length];
+      if (chosen === firstChosen) {
+        // Find a template that is not firstChosen and not prevChosen
+        const valid = templates.filter(t => t !== firstChosen && t !== prevChosen);
+        chosen = valid[0];
       }
-      return templates[Math.abs(hash) % 5];
     }
-    return templates[index % 5];
+    
+    return chosen;
   };
 
   // For marquee: duplicate items to create seamless loop
@@ -509,7 +499,9 @@
     lastTime = performance.now();
     velocityX = 0;
 
-    marqueeContainer.value?.setPointerCapture(e.pointerId);
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
   };
 
   const handlePointerMove = (e: PointerEvent) => {
@@ -537,10 +529,13 @@
     lastTime = now;
   };
 
-  const handlePointerUp = (e: PointerEvent) => {
+  const handlePointerUp = () => {
     if (!isDragging.value) return;
     isDragging.value = false;
-    marqueeContainer.value?.releasePointerCapture(e.pointerId);
+    
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('pointerup', handlePointerUp);
+    window.removeEventListener('pointercancel', handlePointerUp);
 
     const maxVelocity = 40;
     velocityX = Math.max(-maxVelocity, Math.min(maxVelocity, velocityX));
@@ -618,6 +613,9 @@
       cancelAnimationFrame(animationFrameId);
     }
     window.removeEventListener('resize', handleResize);
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('pointerup', handlePointerUp);
+    window.removeEventListener('pointercancel', handlePointerUp);
   });
 
   // Re-init marquee when data loads
