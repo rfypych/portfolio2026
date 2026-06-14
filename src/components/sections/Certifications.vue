@@ -66,12 +66,16 @@
                 </div>
               </div>
             </div>
-            <img :src="statueImages[2]" class="absolute -bottom-4 right-4 w-32 sm:w-48 opacity-[0.25] object-contain mix-blend-multiply pointer-events-none" alt="" />
+            <video v-if="cert.badgeUrl && isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="absolute -bottom-4 right-4 w-32 sm:w-48 opacity-[0.35] object-cover rounded-lg grayscale brightness-90 mix-blend-multiply pointer-events-none" />
+            <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="absolute -bottom-4 right-4 w-32 sm:w-48 opacity-[0.35] object-cover rounded-lg grayscale brightness-90 mix-blend-multiply pointer-events-none" alt="" />
+            <img v-else :src="statueImages[2]" class="absolute -bottom-4 right-4 w-32 sm:w-48 opacity-[0.25] object-contain mix-blend-multiply pointer-events-none" alt="" />
           </div>
 
           <!-- Template B -->
           <div v-else-if="getTemplate(cert, index) === 'B'" class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative overflow-hidden">
-            <img :src="statueImages[0]" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 opacity-[0.12] object-contain mix-blend-multiply pointer-events-none" alt="" />
+            <video v-if="cert.badgeUrl && isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 opacity-[0.15] object-cover rounded-xl grayscale brightness-90 mix-blend-multiply pointer-events-none" />
+            <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 opacity-[0.15] object-cover rounded-xl grayscale brightness-90 mix-blend-multiply pointer-events-none" alt="" />
+            <img v-else :src="statueImages[0]" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 opacity-[0.12] object-contain mix-blend-multiply pointer-events-none" alt="" />
             <div class="flex justify-between items-center z-10 mb-6">
               <div class="bg-flax-smoke-950 text-flax-smoke-50 px-3 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full">
                 CREDENTIAL
@@ -108,12 +112,16 @@
               <div class="w-16 h-1 bg-flax-smoke-950"></div>
               <svg class="w-8 h-8 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8L16 12L12 16M8 12H16"/></svg>
             </div>
-            <img :src="statueImages[1]" class="absolute -right-8 bottom-12 w-40 sm:w-56 opacity-[0.2] object-contain mix-blend-multiply pointer-events-none" alt="" />
+            <video v-if="cert.badgeUrl && isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="absolute -right-8 bottom-12 w-40 sm:w-56 opacity-[0.2] object-cover rounded-xl grayscale brightness-90 mix-blend-multiply pointer-events-none" />
+            <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="absolute -right-8 bottom-12 w-40 sm:w-56 opacity-[0.2] object-cover rounded-xl grayscale brightness-90 mix-blend-multiply pointer-events-none" alt="" />
+            <img v-else :src="statueImages[1]" class="absolute -right-8 bottom-12 w-40 sm:w-56 opacity-[0.2] object-contain mix-blend-multiply pointer-events-none" alt="" />
           </div>
 
           <!-- Template D -->
           <div v-else-if="getTemplate(cert, index) === 'D'" class="h-full flex flex-col p-5 sm:p-8 text-flax-smoke-950 relative z-10 overflow-hidden">
-            <img :src="statueImages[0]" class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.15] object-contain mix-blend-multiply pointer-events-none" alt="" />
+            <video v-if="cert.badgeUrl && isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.18] object-cover rounded-xl grayscale brightness-90 mix-blend-multiply pointer-events-none" />
+            <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.18] object-cover rounded-xl grayscale brightness-90 mix-blend-multiply pointer-events-none" alt="" />
+            <img v-else :src="statueImages[0]" class="absolute -bottom-10 -right-10 w-48 sm:w-64 opacity-[0.15] object-contain mix-blend-multiply pointer-events-none" alt="" />
             <div class="flex justify-between items-start border-b-[1.5px] border-flax-smoke-950 pb-3 sm:pb-4 mb-4">
               <span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-widest">ID-{{ String(index).padStart(4, '0') }}</span>
               <span class="bg-flax-smoke-950 text-flax-smoke-50 px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest">VERIFIED</span>
@@ -143,7 +151,9 @@
               <h4 lang="en" class="font-fancy font-black text-2xl sm:text-4xl uppercase leading-[0.9] tracking-tighter text-balance relative z-10 break-words hyphens-auto pr-2">
                 {{ cert.title }}
               </h4>
-              <img :src="statueImages[1]" class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-20 mix-blend-multiply pointer-events-none" alt="" />
+              <video v-if="cert.badgeUrl && isVideo(cert.badgeUrl)" :src="cert.badgeUrl" autoplay muted loop playsinline class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-[0.2] rounded-lg grayscale brightness-90 mix-blend-multiply pointer-events-none" />
+              <img v-else-if="cert.badgeUrl" :src="cert.badgeUrl" class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-[0.2] rounded-lg grayscale brightness-90 mix-blend-multiply pointer-events-none" alt="" />
+              <img v-else :src="statueImages[1]" class="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-28 sm:w-32 sm:h-40 object-cover opacity-20 mix-blend-multiply pointer-events-none" alt="" />
             </div>
             <div class="flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase z-10">
               <div class="flex justify-between border-b border-flax-smoke-300 pb-1.5 sm:pb-2">
@@ -257,6 +267,24 @@
               {{ writeupCert.type === 'bounty' ? 'Bug Bounty' : writeupCert.type === 'hall-of-fame' ? 'Hall of Fame' : writeupCert.type === 'vd-certificate' ? 'VD Certificate' : 'Course Certificate' }}
             </span>
           </nav>
+
+          <!-- Badge Media -->
+          <div v-if="writeupCert.badgeUrl" class="px-6 sm:px-10 pt-8 max-w-4xl mx-auto">
+            <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+              <video
+                v-if="isVideo(writeupCert.badgeUrl)"
+                :src="writeupCert.badgeUrl"
+                autoplay muted loop playsinline
+                class="w-full h-auto max-h-[50vh] object-contain grayscale brightness-90"
+              />
+              <img
+                v-else
+                :src="writeupCert.badgeUrl"
+                class="w-full h-auto max-h-[50vh] object-contain grayscale brightness-90"
+                :alt="writeupCert.title"
+              />
+            </div>
+          </div>
 
           <!-- Writeup Content -->
           <main class="px-6 sm:px-10 pt-10 pb-20 max-w-4xl mx-auto text-flax-smoke-50">

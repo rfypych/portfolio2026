@@ -38,6 +38,24 @@
           </div>
         </header>
 
+        <!-- Badge Media -->
+        <div v-if="cert.badgeUrl" class="mb-12 sm:mb-16">
+          <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+            <video
+              v-if="isVideo(cert.badgeUrl)"
+              :src="cert.badgeUrl"
+              autoplay muted loop playsinline
+              class="w-full h-auto max-h-[50vh] object-contain grayscale brightness-90"
+            />
+            <img
+              v-else
+              :src="cert.badgeUrl"
+              class="w-full h-auto max-h-[50vh] object-contain grayscale brightness-90"
+              :alt="cert.title"
+            />
+          </div>
+        </div>
+
         <!-- Markdown Body -->
         <article 
           v-if="htmlContent" 
@@ -66,6 +84,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Certification } from '../composables/useCertifications';
+import { isVideo } from '@/functions';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
